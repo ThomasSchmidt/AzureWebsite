@@ -14,3 +14,4 @@ testing feature-4
 updated in feature-5
 
 updated in master
+updated in feature-6
