@@ -1,6 +1,4 @@
 AzureWebsite
 ============
 
-AzureWebsite
-
-Testing git publishing to Azure
+Testing git publishing to Azure - testing rebase workflow
