@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using AzureWebsite.Domain;
 
 namespace AzureWebsite
 {
@@ -7,7 +8,7 @@ namespace AzureWebsite
 	{
 		public static void RegisterGlobalFilters(GlobalFilterCollection filters)
 		{
-			filters.Add(new HandleErrorAttribute());
+			filters.Add(new ExceptionFilterLogger());
 		}
 	}
 }
