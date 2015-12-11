@@ -29,7 +29,7 @@ namespace AzureWebsite.Controllers
 
 			var properties = new Dictionary<string, string> { { "Controllers", "ExecutionTime" } };
 			var measurements = new Dictionary<string, double> { { "ControllerExecutionTime", _w.ElapsedMilliseconds } };
-			MvcApplication.TelemetryClient.TrackEvent("UserAgent", properties, measurements);
+			MvcApplication.TelemetryClient.TrackEvent("Controller", properties, measurements);
 
 			base.OnActionExecuted(filterContext);
 		}
