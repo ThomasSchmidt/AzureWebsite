@@ -21,6 +21,6 @@ namespace AzureWebsite
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
                 .UseStartup<Startup>()
-                .Build();
+				.Build();
     }
 }
