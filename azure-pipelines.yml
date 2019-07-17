@@ -9,6 +9,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   publishDir: 'website-publish'
+  # enables debug output
   system.debug: true
 
 steps:
@@ -30,7 +31,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-o website-publish AzureWebsite/AzureWebsite.csproj'
+    arguments: '-o website-publish'
     zipAfterPublish: false
     modifyOutputPath: false
 
