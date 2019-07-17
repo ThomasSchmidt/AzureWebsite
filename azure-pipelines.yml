@@ -9,6 +9,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   publishDir: 'website-publish'
+  system.debug: true
 
 steps:
 - task: DotNetCoreCLI@2
@@ -29,7 +30,9 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-o website-publish'
+    arguments: '-o website-publish AzureWebsite/AzureWebsite.csproj'
+    zipAfterPublish: false
+    modifyOutputPath: false
 
 - task: CopyFiles@2
   name: 'copy_artifacts'
