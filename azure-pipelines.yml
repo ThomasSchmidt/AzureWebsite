@@ -8,31 +8,31 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  publishDir: 'website-publish'
+  publishDir: 'websitepublish'
   # enables debug output
   system.debug: true
 
 steps:
 - task: DotNetCoreCLI@2
-  name: 'build'
+  name: 'run_build'
   displayName: 'build solution'
   inputs:
     command: 'build'
     arguments: '-c Release'
 
 - task: DotNetCoreCLI@2
-  name: 'test'
+  name: 'run_test'
   displayName: 'run tests'
   inputs:
     command: 'test'
 
 - task: DotNetCoreCLI@2
-  name: 'publish'
+  name: 'publish_website'
   displayName: 'publish website'
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-o website-publish'
+    arguments: '-o websitepublish'
     zipAfterPublish: false
     modifyOutputPath: false
 
@@ -40,8 +40,10 @@ steps:
   name: 'copy_artifacts'
   displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    contents: 'website-publish/**'
-    targetFolder: $(Build.ArtifactStagingDirectory)
+    SourceFolder: 'websitepublish'
+    Contents: |
+     websitepublish/*
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   name: 'publish_artifacts'
