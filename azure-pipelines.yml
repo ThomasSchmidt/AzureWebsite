@@ -33,7 +33,7 @@ steps:
     command: 'publish'
     publishWebProjects: true
     arguments: '-c Release -o $(Build.SourcesDirectory)/websitepublish'
-    zipAfterPublish: false
+    zipAfterPublish: true
     modifyOutputPath: false
 
 - task: CopyFiles@2
