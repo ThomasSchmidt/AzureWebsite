@@ -32,7 +32,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-o websitepublish'
+    arguments: '-c Release -o $(Build.SourcesDirectory)/websitepublish'
     zipAfterPublish: false
     modifyOutputPath: false
 
@@ -40,7 +40,7 @@ steps:
   name: 'copy_artifacts'
   displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: 'websitepublish'
+    SourceFolder: '$(Build.SourcesDirectory)/websitepublish'
     Contents: |
      websitepublish/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
