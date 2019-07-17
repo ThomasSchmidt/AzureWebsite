@@ -8,6 +8,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  publishDir: 'website-publish'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -28,12 +29,13 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
+    arguments: '-o website-publish'
 
 - task: CopyFiles@2
   name: 'copy_artifacts'
   displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    contents: '$(Build.SourcesDirectory)/**/publish/**'
+    contents: 'website-publish/**'
     targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
