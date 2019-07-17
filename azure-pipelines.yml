@@ -41,8 +41,7 @@ steps:
   displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)/websitepublish'
-    Contents: |
-     websitepublish/*
+    Contents: '*.*'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
