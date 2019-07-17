@@ -31,7 +31,7 @@ steps:
 
 - task: CopyFiles@2
   name: 'copy_artifacts'
-  displayName: 'copy artifacts'
+  displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
   inputs:
     contents: '*/publish/**'
     targetFolder: $(Build.ArtifactStagingDirectory)
