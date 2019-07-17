@@ -30,12 +30,16 @@ steps:
     publishWebProjects: true
 
 - task: CopyFiles@2
+  name: 'copy_artifacts'
+  displayName: 'copy artifacts'
   inputs:
-    contents: '**/publish/**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    contents: '*/publish/**'
+    targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
+  name: 'publish_artifacts'
+  displayName: 'publish artifacts'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
+    ArtifactName: 'azure-website'
     publishLocation: 'Container'
