@@ -21,8 +21,8 @@ namespace AzureWebsite
         {
             services.Configure<MvcOptions>(options =>
             {
-                options.RequireHttpsPermanent = true;
-                options.Filters.Add(typeof(RequireHttpsOnAzureAttribute));
+                //options.RequireHttpsPermanent = true;
+                //options.Filters.Add(typeof(RequireHttpsOnAzureAttribute));
             });
             services.AddMvc();
         }
