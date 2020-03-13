@@ -13,6 +13,7 @@ variables:
 
 stages:
 - stage: 'stage_build'
+  displayName: 'stage build'
   jobs:
   - job: 'build'
     steps:
@@ -46,9 +47,8 @@ stages:
       name: 'publish_artifacts'
       displayName: 'publish artifacts'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/website'
         ArtifactName: 'azure-website'
-        publishLocation: 'Container'
 
 - stage: 'stage_deploy_test'
   dependsOn: 'stage_build'
