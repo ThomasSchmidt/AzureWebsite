@@ -54,20 +54,45 @@ stages:
   dependsOn: Build
   displayName: 'deploy test stage'
   jobs:
-  - job: Deploy_Test
+  - deployment: 'deployment-schmidt-test'
+    variables:
+      WebAppName: 'schmidt-test'
+    environment: 'test'
     pool: 
       vmImage: 'ubuntu-16.04'
-    displayName: 'Deploy test job'
-    steps:
-        - script: echo 'hello from deploy test job'
+    displayName: 'Deploy test'
+    strategy:
+     runOnce:
+       deploy:
+        steps:
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'schmidt-test app service deploy'
+            inputs:
+              appType: 'webAppLinux'
+              azureSubscription: 'pay-as-you-go'
+              ConnectionType: 'AzureRM'
+              WebAppName: $(WebAppName)
+              packageForLinux: '$(System.WorkFolder)/**/*.zip'
 
 - stage: Deploy_Production
   dependsOn: Deploy_Test
   displayName: 'deploy production stage'
   jobs:
-  - job: Deploy_Production
+  - deployment: Deploy_Production
+    variables:
+      WebAppName: 'schmidt'
     pool: 
       vmImage: 'ubuntu-16.04'
-    displayName: 'Deploy production job'
-    steps:
-        - script: echo 'hello from deploy production job'
+    displayName: 'Deploy production'
+    strategy:
+     runOnce:
+       deploy:
+        steps:
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'schmidt app service deploy'
+            inputs:
+              appType: 'webAppLinux'
+              azureSubscription: 'pay-as-you-go'
+              ConnectionType: 'AzureRM'
+              WebAppName: $(WebAppName)
+              packageForLinux: '$(System.WorkFolder)/**/*.zip'
