@@ -65,12 +65,6 @@ stages:
      runOnce:
        deploy:
         steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'azure-website'
-              itemPattern: '**/*.zip'
-              targetPath: '$(Pipeline.Workspace)'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt-test app service deploy'
             inputs:
@@ -78,7 +72,7 @@ stages:
               azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
               appType: 'webAppLinux'
               WebAppName: '$(WebAppName)'
-              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
               RuntimeStack: 'DOTNETCORE|LTS'
 
 - stage: 'stage_deploy_production'
