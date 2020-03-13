@@ -55,9 +55,9 @@ stages:
   displayName: 'deploy test stage'
   jobs:
   - deployment: 'deployment_schmidt_test'
+    environment: 'test'
     variables:
       WebAppName: 'schmidt-test'
-    environment: 'test'
     pool: 
       vmImage: 'ubuntu-16.04'
     displayName: 'Deploy test'
@@ -79,6 +79,7 @@ stages:
   displayName: 'deploy production stage'
   jobs:
   - deployment: 'deploy_schmidt_production'
+    environment: 'production'
     variables:
       WebAppName: 'schmidt'
     pool: 
