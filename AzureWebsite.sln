@@ -8,11 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{DBC36CDA-3070-4111-A669-EEA3DCFA712E}"
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
+		version.json = version.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DB1EF025-EB30-4983-AF3C-7FA7716CB505}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWebsite.Tests", "test\AzureWebsite.Tests\AzureWebsite.Tests.csproj", "{6FBC6B45-DF1C-4F81-8CD8-0DB3B5D53CCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureWebsite.Tests", "test\AzureWebsite.Tests\AzureWebsite.Tests.csproj", "{6FBC6B45-DF1C-4F81-8CD8-0DB3B5D53CCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
