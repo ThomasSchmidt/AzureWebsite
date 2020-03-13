@@ -50,6 +50,9 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/website'
         ArtifactName: 'azure-website'
 
+    - publish: '$(Build.ArtifactStagingDirectory)/website'
+      artifact: 'azure-website'
+      
 - stage: 'stage_deploy_test'
   dependsOn: 'stage_build'
   displayName: 'deploy test stage'
