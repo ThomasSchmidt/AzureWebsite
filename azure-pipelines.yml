@@ -47,10 +47,10 @@ stages:
       name: 'publish_artifacts'
       displayName: 'publish artifacts'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/website'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'azure-website'
 
-    - publish: '$(Build.ArtifactStagingDirectory)/website'
+    - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: 'azure-website'
       
 - stage: 'stage_deploy_test'
