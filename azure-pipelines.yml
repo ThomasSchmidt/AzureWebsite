@@ -12,9 +12,9 @@ variables:
   system.debug: true
 
 stages:
-- stage: Build
+- stage: 'stage_build'
   jobs:
-  - job: Build
+  - job: 'build'
     steps:
     - task: UseDotNet@2
       displayName: 'Use .net core sdk 3.1.x'
@@ -50,11 +50,11 @@ stages:
         ArtifactName: 'azure-website'
         publishLocation: 'Container'
 
-- stage: Deploy-Test-Stage
-  dependsOn: Build
+- stage: 'stage_deploy_test'
+  dependsOn: 'stage_build'
   displayName: 'deploy test stage'
   jobs:
-  - deployment: 'deployment-schmidt-test'
+  - deployment: 'deployment_schmidt_test'
     variables:
       WebAppName: 'schmidt-test'
     environment: 'test'
@@ -74,11 +74,11 @@ stages:
               WebAppName: $(WebAppName)
               packageForLinux: '$(System.WorkFolder)/**/*.zip'
 
-- stage: Deploy-Production-Stage
-  dependsOn: 'Deploy-Test'
+- stage: 'stage_deploy_production'
+  dependsOn: 'stage_deploy_test'
   displayName: 'deploy production stage'
   jobs:
-  - deployment: 'deploy-schmidt-production'
+  - deployment: 'deploy_schmidt_production'
     variables:
       WebAppName: 'schmidt'
     pool: 
