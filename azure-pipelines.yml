@@ -11,39 +11,63 @@ variables:
   # enables debug output
   system.debug: true
 
-steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '3.1.x'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .net core sdk 3.1.x'
+      name: 'use_sdk'
+      inputs:
+          version: '3.1.x'
+          packageType: 'sdk'
+    - task: DotNetCoreCLI@2
+      name: 'run_build'
+      displayName: 'build solution'
+      inputs:
+       command: 'build'
+       arguments: '-c $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      name: 'run_test'
+      displayName: 'run tests'
+      inputs:
+        command: 'test'
+    - task: DotNetCoreCLI@2
+      name: 'publish_website'
+      displayName: 'publish website'
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
+        zipAfterPublish: true
+        modifyOutputPath: false
+    - task: PublishBuildArtifacts@1
+      name: 'publish_artifacts'
+      displayName: 'publish artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'azure-website'
+        publishLocation: 'Container'
 
-- task: DotNetCoreCLI@2
-  name: 'run_build'
-  displayName: 'build solution'
-  inputs:
-    command: 'build'
-    arguments: '-c $(buildConfiguration)'
+- stage: Deploy_Test
+  dependsOn: Build
+  displayName: 'deploy test stage'
+  jobs:
+  - job: Deploy_Test
+    pool: 
+      vmImage: 'ubuntu-16.04'
+    displayName: 'Deploy test job'
+    steps:
+        - script: echo 'hello from deploy test job'
 
-- task: DotNetCoreCLI@2
-  name: 'run_test'
-  displayName: 'run tests'
-  inputs:
-    command: 'test'
-
-- task: DotNetCoreCLI@2
-  name: 'publish_website'
-  displayName: 'publish website'
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
-    zipAfterPublish: true
-    modifyOutputPath: false
-
-- task: PublishBuildArtifacts@1
-  name: 'publish_artifacts'
-  displayName: 'publish artifacts'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'azure-website'
-    publishLocation: 'Container'
+- stage: Deploy_Production
+  dependsOn: Deploy_Test
+  displayName: 'deploy production stage'
+  jobs:
+  - job: Deploy_Production
+    pool: 
+      vmImage: 'ubuntu-16.04'
+    displayName: 'Deploy production job'
+    steps:
+        - script: echo 'hello from deploy production job'
