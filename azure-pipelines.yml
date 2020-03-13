@@ -50,11 +50,9 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'azure-website'
 
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'azure-website'
-      
 - stage: 'stage_deploy_test'
-  dependsOn: 'stage_build'
+  dependsOn: 
+  - 'stage_build'
   displayName: 'deploy test stage'
   jobs:
   - deployment: 'deployment_schmidt_test'
@@ -68,6 +66,8 @@ stages:
      runOnce:
        deploy:
         steps:
+          - download: current
+            artifact: 'azure-website'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt-test app service deploy'
             inputs:
@@ -79,7 +79,8 @@ stages:
               RuntimeStack: 'DOTNETCORE|LTS'
 
 - stage: 'stage_deploy_production'
-  dependsOn: 'stage_deploy_test'
+  dependsOn: 
+  - 'stage_deploy_test'
   displayName: 'deploy production stage'
   jobs:
   - deployment: 'deploy_schmidt_production'
