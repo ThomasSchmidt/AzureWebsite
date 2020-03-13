@@ -72,7 +72,7 @@ stages:
               azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
               appType: 'webAppLinux'
               WebAppName: '$(WebAppName)'
-              packageForLinux: '$(System.WorkFolder)/**/*.zip'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
               RuntimeStack: 'DOTNETCORE|LTS'
 
 - stage: 'stage_deploy_production'
