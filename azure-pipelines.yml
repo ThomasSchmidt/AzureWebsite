@@ -22,7 +22,7 @@ steps:
   displayName: 'build solution'
   inputs:
     command: 'build'
-    arguments: '-configuration $(buildConfiguration)'
+    arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   name: 'run_test'
@@ -36,7 +36,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-configuration $(buildConfiguration) -output $(Build.ArtifactStagingDirectory -r linux-x64'
+    arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory -r linux-x64'
     zipAfterPublish: true
     modifyOutputPath: false
 
