@@ -50,7 +50,7 @@ stages:
         ArtifactName: 'azure-website'
         publishLocation: 'Container'
 
-- stage: Deploy_Test
+- stage: Deploy-Test-Stage
   dependsOn: Build
   displayName: 'deploy test stage'
   jobs:
@@ -74,11 +74,11 @@ stages:
               WebAppName: $(WebAppName)
               packageForLinux: '$(System.WorkFolder)/**/*.zip'
 
-- stage: Deploy_Production
-  dependsOn: Deploy_Test
+- stage: Deploy-Production-Stage
+  dependsOn: 'Deploy-Test'
   displayName: 'deploy production stage'
   jobs:
-  - deployment: Deploy_Production
+  - deployment: 'deploy-schmidt-production'
     variables:
       WebAppName: 'schmidt'
     pool: 
