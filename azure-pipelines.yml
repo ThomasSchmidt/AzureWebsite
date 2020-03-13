@@ -40,14 +40,6 @@ steps:
     zipAfterPublish: true
     modifyOutputPath: false
 
-#- task: CopyFiles@2
-#  name: 'copy_artifacts'
-#  displayName: 'copy artifacts to: $(Build.ArtifactStagingDirectory)'
-#  inputs:
-#    SourceFolder: '$(Build.SourcesDirectory)/websitepublish'
-#    Contents: '**/*.*'
-#    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
 - task: PublishBuildArtifacts@1
   name: 'publish_artifacts'
   displayName: 'publish artifacts'
