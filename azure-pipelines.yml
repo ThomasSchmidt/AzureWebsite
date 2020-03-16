@@ -45,11 +45,11 @@ stages:
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: '$(webArtifactName)'
-    - task: PublishPipelineArtifact@1
-      name: 'publish_pipeline_artifacts'
-      displayName: 'publish pipeline artifacts'
-      inputs:
-       artifact: '$(webArtifactName)'
+    #- task: PublishPipelineArtifact@1
+    #  name: 'publish_pipeline_artifacts'
+    #  displayName: 'publish pipeline artifacts'
+    #  inputs:
+    #   artifact: '$(webArtifactName)'
 
 - stage: 'stage_test'
   displayName: 'stage test'
