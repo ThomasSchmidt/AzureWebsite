@@ -87,6 +87,12 @@ stages:
      runOnce:
        deploy:
         steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: '$(webArtifactName)'
+              targetPath: '$(Pipeline.Workspace)'
+
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt-test app service deploy'
             inputs:
@@ -115,8 +121,11 @@ stages:
      runOnce:
        deploy:
         steps:
-          - download: current
-            artifact: '$(webArtifactName)'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: '$(webArtifactName)'
+              targetPath: '$(Pipeline.Workspace)'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt app service deploy'
             inputs:
