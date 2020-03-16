@@ -14,7 +14,7 @@ variables:
 
 stages:
 - stage: 'stage_build'
-  displayName: 'stage build'
+  displayName: 'build'
   jobs:
   - job: 'build'
     steps:
@@ -52,7 +52,7 @@ stages:
     #   artifact: '$(webArtifactName)'
 
 - stage: 'stage_test'
-  displayName: 'stage test'
+  displayName: 'run tests'
   dependsOn:
   - 'stage_build'
   jobs:
@@ -71,10 +71,10 @@ stages:
             command: 'test'
 
 - stage: 'stage_deploy_test'
+  displayName: 'deploy to test'
   dependsOn: 
   - 'stage_build'
   - 'stage_test'
-  displayName: 'deploy test stage'
   jobs:
   - deployment: 'deployment_schmidt_test'
     environment: 'test'
