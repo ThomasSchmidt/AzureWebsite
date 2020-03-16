@@ -76,8 +76,6 @@ stages:
      runOnce:
        deploy:
         steps:
-          - download: current
-            artifact: '$(webArtifactName)'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt-test app service deploy'
             inputs:
