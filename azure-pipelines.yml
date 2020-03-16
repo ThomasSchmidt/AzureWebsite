@@ -8,6 +8,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  webArtifactName: 'azure-website'
   # enables debug output
   system.debug: true
 
@@ -38,6 +39,12 @@ stages:
         arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
+    - task: PublishBuildArtifacts@1
+      name: 'publish_artifacts'
+      displayName: 'publish artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(webArtifactName)'
 
 - stage: 'stage_test'
   displayName: 'stage test'
@@ -51,21 +58,6 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
-
-- stage: 'stage_publish_artifacts'
-  displayName: 'stage publish artifacts'
-  dependsOn:
-  - 'stage_build'
-  - 'stage_test'
-  jobs:
-  - job: 'publishartifacts'
-    steps:
-      - task: PublishBuildArtifacts@1
-        name: 'publish_artifacts'
-        displayName: 'publish artifacts'
-        inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'azure-website'
 
 - stage: 'stage_deploy_test'
   dependsOn: 
@@ -86,7 +78,7 @@ stages:
        deploy:
         steps:
           - download: current
-            artifact: 'azure-website'
+            artifact: '$(webArtifactName)'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt-test app service deploy'
             inputs:
@@ -116,6 +108,8 @@ stages:
      runOnce:
        deploy:
         steps:
+          - download: current
+            artifact: '$(webArtifactName)'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt app service deploy'
             inputs:
