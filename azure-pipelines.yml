@@ -63,7 +63,6 @@ stages:
   dependsOn: 
   - 'stage_build'
   - 'stage_test'
-  - 'stage_publish_artifacts'
   displayName: 'deploy test stage'
   jobs:
   - deployment: 'deployment_schmidt_test'
@@ -93,7 +92,6 @@ stages:
   dependsOn: 
   - 'stage_build'
   - 'stage_test'
-  - 'stage_publish_artifacts'
   - 'stage_deploy_test'
   displayName: 'deploy production stage'
   jobs:
