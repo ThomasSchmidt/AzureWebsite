@@ -50,7 +50,7 @@ stages:
       displayName: 'publish pipeline artifacts'
       inputs:
         artifact: '$(webArtifactName)'
-        targetPath: '(Build.ArtifactStagingDirectory)'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - stage: 'stage_test'
   displayName: 'run tests'
