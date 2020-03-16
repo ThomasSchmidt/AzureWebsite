@@ -63,7 +63,6 @@ stages:
             buildType: 'current'
             artifactName: '$(webArtifactName)'
             targetPath: '$(Pipeline.Workspace)'
-          
         - task: DotNetCoreCLI@2
           name: 'run_test'
           displayName: 'run tests'
@@ -87,7 +86,9 @@ stages:
      runOnce:
        deploy:
         steps:
+          - script: echo 'deploy test'
           - task: DownloadPipelineArtifact@2
+            displayName: 'Download website artifact'
             inputs:
               buildType: 'current'
               artifactName: '$(webArtifactName)'
