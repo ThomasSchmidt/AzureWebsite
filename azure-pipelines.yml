@@ -30,11 +30,6 @@ stages:
        command: 'build'
        arguments: '-c $(buildConfiguration)'
     - task: DotNetCoreCLI@2
-      name: 'run_test'
-      displayName: 'run tests'
-      inputs:
-        command: 'test'
-    - task: DotNetCoreCLI@2
       name: 'publish_website'
       displayName: 'publish website'
       inputs:
@@ -43,16 +38,40 @@ stages:
         arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
-    - task: PublishBuildArtifacts@1
-      name: 'publish_artifacts'
-      displayName: 'publish artifacts'
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'azure-website'
+
+- stage: 'stage_test'
+  displayName: 'stage test'
+  dependsOn:
+  - 'stage_build'
+  jobs:
+    - job: 'test'
+      steps:
+        - task: DotNetCoreCLI@2
+          name: 'run_test'
+          displayName: 'run tests'
+          inputs:
+            command: 'test'
+
+- stage: 'stage_publish_artifacts'
+  displayName: 'stage publish artifacts'
+  dependsOn:
+  - 'stage_build'
+  - 'stage_test'
+  jobs:
+  - job: 'publishartifacts'
+    steps:
+      - task: PublishBuildArtifacts@1
+        name: 'publish_artifacts'
+        displayName: 'publish artifacts'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'azure-website'
 
 - stage: 'stage_deploy_test'
   dependsOn: 
   - 'stage_build'
+  - 'stage_test'
+  - 'stage_publish_artifacts'
   displayName: 'deploy test stage'
   jobs:
   - deployment: 'deployment_schmidt_test'
@@ -80,6 +99,9 @@ stages:
 
 - stage: 'stage_deploy_production'
   dependsOn: 
+  - 'stage_build'
+  - 'stage_test'
+  - 'stage_publish_artifacts'
   - 'stage_deploy_test'
   displayName: 'deploy production stage'
   jobs:
