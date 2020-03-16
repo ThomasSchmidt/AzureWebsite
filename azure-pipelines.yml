@@ -50,6 +50,7 @@ stages:
       displayName: 'publish pipeline artifacts'
       inputs:
         artifact: '$(webArtifactName)'
+        targetPath: '(Build.ArtifactStagingDirectory)'
 
 - stage: 'stage_test'
   displayName: 'run tests'
@@ -62,7 +63,7 @@ stages:
           inputs:
             buildType: 'current'
             artifactName: '$(webArtifactName)'
-            targetPath: '$(Pipeline.Workspace)'
+            targetPath: '$(Pipeline.Workspace)/website-artifact'
         - task: DotNetCoreCLI@2
           name: 'run_test'
           displayName: 'run tests'
