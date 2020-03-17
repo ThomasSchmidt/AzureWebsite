@@ -63,6 +63,7 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
+            arguments: '--collect:"XPlat Code Coverage"'
 
 - stage: 'stage_deploy_test'
   displayName: 'deploy to test'
