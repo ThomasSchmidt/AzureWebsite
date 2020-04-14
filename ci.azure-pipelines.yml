@@ -26,6 +26,12 @@ jobs:
       packageType: 'sdk'
 
   - task: DotNetCoreCLI@2
+    displayName: 'restore packages'
+    name: 'restore_packages'
+    inputs:
+      command: 'restore'
+
+  - task: DotNetCoreCLI@2
     displayName: 'build solution'
     name: 'run_build'
     inputs:
