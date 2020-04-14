@@ -43,7 +43,7 @@ jobs:
     name: 'run_tests'
     inputs:
      command: test
-     arguments: '--collect:"XPlat Code Coverage" --results-directory $(Pipeline.Workspace)\TestResults'
+     arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
      projects: '**/*Tests/*.csproj'
 
   - task: PublishCodeCoverageResults@1
