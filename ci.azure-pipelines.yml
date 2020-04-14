@@ -30,3 +30,13 @@ jobs:
     inputs:
       command: 'build'
       arguments: '-c $(buildConfiguration)'
+
+  - task: VSTest@2
+    displayName: 'run tests'
+    name: 'run_tests'
+    inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+        resultsFolder: '$(Pipeline.Workspace)\TestResults'
+        codeCoverageEnabled: true
+        publishRunAttachments: true
