@@ -2,6 +2,7 @@ name: 'CI'
 
 trigger:
 - master
+- feature/*
 
 pool:
   # vmImage: 'ubuntu-16.04'
@@ -46,7 +47,7 @@ jobs:
      arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
      projects: '**/*Tests/*.csproj'
 
-  - task: PublishCodeCoverageResults@1
-    inputs:
-      codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+  #- task: PublishCodeCoverageResults@1
+  #  inputs:
+  #    codeCoverageTool: 'Cobertura'
+  #    summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
