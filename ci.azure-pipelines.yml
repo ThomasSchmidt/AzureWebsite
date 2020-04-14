@@ -13,7 +13,7 @@ variables:
   buildConfiguration: 'Release'
   webArtifactName: 'azure-website'
   # enables debug output
-  system.debug: true
+  # system.debug: true
 
 jobs:
 - job: 'build'
