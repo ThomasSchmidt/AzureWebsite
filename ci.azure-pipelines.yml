@@ -47,3 +47,11 @@ jobs:
         resultsFolder: '$(Pipeline.Workspace)\TestResults'
         codeCoverageEnabled: true
         publishRunAttachments: true
+
+  - task: DotNetCoreCLI@2
+    displayName: 'run test - dotnet native'
+    name: 'run_tests_dotnet'
+    inputs:
+     command: test
+     arguments: '--collect:"XPlat Code Coverage"'
+     # publishTestResults: true
