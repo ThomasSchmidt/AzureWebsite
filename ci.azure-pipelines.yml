@@ -54,3 +54,17 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- stage: 'Stage_Wtf'
+  displayName: 'Stage - Wtf'
+  jobs:
+  - job: 'build'
+    steps:
+    - task: PowerShell@2
+      displayName: 'write wtf'
+      name: 'write_wtf'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Write-Host "wtf"
