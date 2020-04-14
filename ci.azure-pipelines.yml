@@ -38,20 +38,15 @@ jobs:
       command: 'build'
       arguments: '-c $(buildConfiguration)'
 
-  - task: VSTest@2
+  - task: DotNetCoreCLI@2
     displayName: 'run tests'
     name: 'run_tests'
     inputs:
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
-        resultsFolder: '$(Pipeline.Workspace)\TestResults'
-        codeCoverageEnabled: true
-        publishRunAttachments: true
-
-  - task: DotNetCoreCLI@2
-    displayName: 'run test - dotnet native'
-    name: 'run_tests_dotnet'
-    inputs:
      command: test
-     arguments: '--collect:"XPlat Code Coverage"'
-     # publishTestResults: true
+     arguments: '--collect:"XPlat Code Coverage" --results-directory $(Pipeline.Workspace)\TestResults'
+     projects: '**/*Tests/*.csproj'
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
