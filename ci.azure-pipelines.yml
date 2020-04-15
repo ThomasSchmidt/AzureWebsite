@@ -54,7 +54,7 @@ stages:
       name: 'publish_coverage_file'
       inputs:
         artifact: 'coveragexmlartifact'
-        targetPath: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+        targetPath: '$(Agent.TempDirectory)\**\*'
 
     - task: PublishCodeCoverageResults@1
       inputs:
