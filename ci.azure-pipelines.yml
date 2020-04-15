@@ -50,6 +50,12 @@ stages:
         arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
         projects: '**/*Tests/*.csproj'
 
+    - task: PublishPipelineArtifact@1
+      name: 'publish_coverage_file'
+      inputs:
+        artifact: 'coveragexmlartifact'
+        targetPath: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
