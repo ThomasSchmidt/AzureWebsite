@@ -105,8 +105,8 @@ stages:
 
 - stage: 'stage_other'
   displayName: 'other'
-  dependsOn:
-  - 'stage_test'
+  # dependsOn:
+  # - 'stage_test'
   jobs:
   - job: 'other'
     steps:
