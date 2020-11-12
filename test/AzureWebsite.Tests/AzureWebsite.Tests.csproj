@@ -19,7 +19,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\AzureWebsite\AzureWebsite.csproj" />
+    <ProjectReference Include="..\..\src\Website\Website.csproj" />
   </ItemGroup>
   
 </Project>
