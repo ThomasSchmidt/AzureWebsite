@@ -79,8 +79,7 @@ stages:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          ls $(Pipeline.Workspace)
-
+          tree $(Pipeline.Workspace) /f
 
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
