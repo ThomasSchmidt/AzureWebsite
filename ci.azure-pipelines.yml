@@ -83,7 +83,7 @@ stages:
 
     - task: PowerShell@2
       displayName: 'list workspace'
-      name: 'list_workspace'
+      name: 'list_workspace_buildartifact'
       inputs:
         targetType: 'inline'
         script: |
