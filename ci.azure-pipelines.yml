@@ -46,8 +46,8 @@ stages:
       name: 'publish_test_artifacts'
       displayName: 'Publish source code pipeline artifacts'
       inputs:
-        artifact: 'test_artifact'
-        targetPath: '$(build.SourcesDirectory)/test/'
+        artifact: 'build_artifact'
+        targetPath: '$(build.SourcesDirectory)/'
 
 
 - stage: 'stage_test'
@@ -62,8 +62,8 @@ stages:
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
-        artifactName: 'test_artifact'
-        targetPath: '$(Pipeline.Workspace)/test/'
+        artifactName: 'build_artifact'
+        targetPath: '$(Pipeline.Workspace)/'
 
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
