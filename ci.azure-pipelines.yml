@@ -71,7 +71,7 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
-        projects: '**/*Tests/*.csproj'
+        projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
 
     - task: PublishPipelineArtifact@1
       displayName: 'publish code coverage'
