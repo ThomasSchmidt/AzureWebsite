@@ -81,6 +81,15 @@ stages:
           # Write your PowerShell commands here.
           ls $(Pipeline.Workspace)
 
+    - task: PowerShell@2
+      displayName: 'list workspace'
+      name: 'list_workspace'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          ls $(Pipeline.Workspace)/buildartifact
+
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
       name: 'use_sdk'
