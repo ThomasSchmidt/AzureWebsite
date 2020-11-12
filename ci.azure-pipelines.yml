@@ -40,7 +40,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
         projects: '$(solution)'
 
@@ -93,7 +93,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
         projects: '$(solution)'
 
