@@ -58,6 +58,13 @@ stages:
   - job: test
     steps:
     - checkout: none
+    
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'test_artifact'
+        targetPath: '$(Pipeline.Workspace)/test/'
+
     - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
