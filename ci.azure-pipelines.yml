@@ -44,6 +44,15 @@ stages:
         publishTestResults: false
         projects: '$(solution)'
 
+    - task: PowerShell@2
+      displayName: 'list workspace'
+      name: 'list_workspace_unittest'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -Recurse
+
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
@@ -96,6 +105,15 @@ stages:
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
         projects: '$(solution)'
+
+    - task: PowerShell@2
+      displayName: 'list workspace'
+      name: 'list_workspace_integrationtest'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -Recurse
 
     #- task: PublishPipelineArtifact@1
     #  displayName: 'publish code coverage'
