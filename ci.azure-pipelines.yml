@@ -40,7 +40,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --filter Category=unittest --collect:"XPlat Code Coverage" /p:CoverletOutput=$(Pipeline.Workspace)/TestResults/coverage.cobertura.xml'
+        arguments: '-c $(buildConfiguration) --filter Category=unittest --collect:"XPlat Code Coverage" --results-directory $(Pipeline.Workspace)/TestResults/coverage.cobertura.xml'
         projects: '$(solution)'
 
     - task: PublishCodeCoverageResults@1
