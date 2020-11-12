@@ -134,13 +134,33 @@ stages:
   # dependsOn:
   # - 'stage_test'
   jobs:
-  - job: 'other'
+  - job: 'other1'
     steps:
     - task: PowerShell@2
-      displayName: 'write other'
-      name: 'write_other'
+      displayName: 'write other1'
+      name: 'write_other1'
       inputs:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          Write-Host "Other"
+          Write-Host "Other1"
+  - job: 'other2'
+    steps:
+    - task: PowerShell@2
+      displayName: 'write other2'
+      name: 'write_other2'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Write-Host "Other2"
+  - job: 'other3'
+    steps:
+    - task: PowerShell@2
+      displayName: 'write other3'
+      name: 'write_other3'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Write-Host "Other3"
