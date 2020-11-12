@@ -41,7 +41,6 @@ stages:
       inputs:
         command: build
         arguments: '-c $(buildConfiguration)'
-        # workingDirectory: $(Pipeline.Workspace)
         projects: '$(solution)'
 
     - task: DotNetCoreCLI@2
@@ -50,7 +49,6 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
-        # workingDirectory: $(Pipeline.Workspace)
         projects: '$(solution)'
 
     - task: PublishCodeCoverageResults@1
@@ -111,7 +109,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
         # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
         # projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
         # workingDirectory: $(Pipeline.Workspace)/buildartifact
