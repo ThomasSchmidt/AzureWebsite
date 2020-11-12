@@ -58,7 +58,7 @@ stages:
 
 
 - stage: 'stage_test_2'
-  displayName: 'test'
+  displayName: 'test2'
   # dependsOn:
   # - 'stage_build'
   jobs:
@@ -71,6 +71,16 @@ stages:
         buildType: 'current'
         artifactName: 'build_artifact'
         targetPath: '$(Pipeline.Workspace)/'
+
+    - task: PowerShell@2
+      displayName: 'list workspace'
+      name: 'list_workspace'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          ls $(Pipeline.Workspace)
+
 
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
