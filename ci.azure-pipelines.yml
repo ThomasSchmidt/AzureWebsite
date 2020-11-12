@@ -51,15 +51,16 @@ stages:
         projects: '**/*Tests/*.csproj'
 
     - task: PublishPipelineArtifact@1
+      displayName: 'publish code coverage'
       name: 'publish_coverage_file'
       inputs:
         artifact: 'coveragexmlartifact'
-        targetPath: '$(Agent.TempDirectory)\'
+        targetPath: '$(Agent.TempDirectory)/'
 
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
 - stage: 'Stage_Wtf'
   displayName: 'Stage - Wtf'
