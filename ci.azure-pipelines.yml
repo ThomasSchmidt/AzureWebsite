@@ -36,6 +36,15 @@ stages:
         command: 'restore'
 
     - task: DotNetCoreCLI@2
+      displayName: 'build'
+      name: 'build'
+      inputs:
+        command: build
+        arguments: '-c $(buildConfiguration)'
+        # workingDirectory: $(Pipeline.Workspace)
+        projects: '$(solution)'
+
+    - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
       inputs:
