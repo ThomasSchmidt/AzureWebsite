@@ -49,6 +49,7 @@ stages:
   jobs:
   - job: test
     steps:
+    - checkout: none
     - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
