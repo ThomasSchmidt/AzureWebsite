@@ -63,7 +63,7 @@ stages:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          ls $(Agent.TempDirectory)
+          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
 
     - task: PublishPipelineArtifact@1
       name: 'publish_test_artifacts'
