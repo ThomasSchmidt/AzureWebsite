@@ -105,7 +105,7 @@ stages:
         arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
         # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
         # projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
-        workingDirectory: $(Pipeline.Workspace)
+        workingDirectory: $(Pipeline.Workspace)/buildartifact
         projects: '$(solution)'
 
     - task: PublishPipelineArtifact@1
