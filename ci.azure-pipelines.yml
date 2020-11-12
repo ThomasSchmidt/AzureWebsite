@@ -41,6 +41,7 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage" --results-directory $(Pipeline.Workspace)/TestResults/coverage.cobertura.xml'
+        publishTestResults: false
         projects: '$(solution)'
 
     - task: PublishCodeCoverageResults@1
