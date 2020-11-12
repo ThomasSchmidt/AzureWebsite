@@ -70,7 +70,7 @@ stages:
       inputs:
         buildType: 'current'
         artifactName: 'build_artifact'
-        targetPath: '$(Pipeline.Workspace)/'
+        targetPath: '$(Pipeline.Workspace)/buildartifact'
 
     - task: PowerShell@2
       displayName: 'list workspace'
@@ -79,7 +79,7 @@ stages:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          tree $(Pipeline.Workspace) /f
+          ls $(Pipeline.Workspace)
 
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
