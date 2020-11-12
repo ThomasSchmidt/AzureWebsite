@@ -43,6 +43,15 @@ stages:
         arguments: '-c $(buildConfiguration)'
         projects: '$(solution)'
 
+    - task: PowerShell@2
+      displayName: 'ls temp dir'
+      name: 'ls_tempdir1'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
+
     - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
@@ -51,14 +60,23 @@ stages:
         arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
-    - task: PublishCodeCoverageResults@1
+    - task: PowerShell@2
+      displayName: 'ls temp dir'
+      name: 'ls_tempdir2'
       inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
+
+    # - task: PublishCodeCoverageResults@1
+    #   inputs:
+    #     codeCoverageTool: 'Cobertura'
+    #    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
     - task: PowerShell@2
       displayName: 'ls temp dir'
-      name: 'ls_tempdir'
+      name: 'ls_tempdir3'
       inputs:
         targetType: 'inline'
         script: |
@@ -135,19 +153,3 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-
-- stage: 'stage_other'
-  displayName: 'other'
-  # dependsOn:
-  # - 'stage_test'
-  jobs:
-  - job: 'other1'
-    steps:
-    - task: PowerShell@2
-      displayName: 'write other1'
-      name: 'write_other1'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Write-Host "Other1"
