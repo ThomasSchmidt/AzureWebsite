@@ -77,8 +77,9 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
-        projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
+        arguments: '--verbosity diag --no-build --collect:"XPlat Code Coverage"'
+        # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
+        # projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
 
     - task: PublishPipelineArtifact@1
       displayName: 'publish code coverage'
