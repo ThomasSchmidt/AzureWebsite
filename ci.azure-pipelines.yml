@@ -49,7 +49,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
         # workingDirectory: $(Pipeline.Workspace)
         projects: '$(solution)'
 
