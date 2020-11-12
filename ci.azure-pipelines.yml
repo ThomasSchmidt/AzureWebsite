@@ -17,10 +17,10 @@ variables:
   # system.debug: true
 
 stages:
-- stage: 'stage_build'
-  displayName: 'build'
+- stage: 'stage_unittest'
+  displayName: 'run unit tests'
   jobs:
-  - job: 'build'
+  - job: 'test'
     steps:
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
@@ -36,52 +36,17 @@ stages:
         command: 'restore'
 
     - task: DotNetCoreCLI@2
-      displayName: 'build'
-      name: 'build'
-      inputs:
-        command: build
-        arguments: '-c $(buildConfiguration)'
-        projects: '$(solution)'
-
-    - task: PowerShell@2
-      displayName: 'ls temp dir'
-      name: 'ls_tempdir1'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
-
-    - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --filter Category=unittest --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
-    - task: PowerShell@2
-      displayName: 'ls temp dir'
-      name: 'ls_tempdir2'
+    - task: PublishCodeCoverageResults@1
       inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
-
-    # - task: PublishCodeCoverageResults@1
-    #   inputs:
-    #     codeCoverageTool: 'Cobertura'
-    #    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-
-    - task: PowerShell@2
-      displayName: 'ls temp dir'
-      name: 'ls_tempdir3'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem -Path $(Agent.TempDirectory) -Recurse
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
     - task: PublishPipelineArtifact@1
       name: 'publish_test_artifacts'
@@ -90,30 +55,20 @@ stages:
         artifact: 'build_artifact'
         targetPath: '$(build.SourcesDirectory)/'
 
-
-- stage: 'stage_test_2'
-  displayName: 'test2'
+- stage: 'stage_integrationtests'
+  displayName: 'run integration tests'
   # dependsOn:
   # - 'stage_build'
   jobs:
-  - job: test
+  - job: 'test'
     steps:
-    - checkout: none
+    #- checkout: none
     
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'build_artifact'
-        targetPath: '$(Pipeline.Workspace)/buildartifact'
-
-    #- task: PowerShell@2
-    #  displayName: 'list workspace'
-    #  name: 'list_workspace'
+    #- task: DownloadPipelineArtifact@2
     #  inputs:
-    #    targetType: 'inline'
-    #    script: |
-    #      # Write your PowerShell commands here.
-    #      ls $(Pipeline.Workspace)
+    #    buildType: 'current'
+    #    artifactName: 'build_artifact'
+    #    targetPath: '$(Pipeline.Workspace)/buildartifact'
 
     #- task: PowerShell@2
     #  displayName: 'list workspace'
@@ -136,11 +91,8 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
-        # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
-        # projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
-        # workingDirectory: $(Pipeline.Workspace)/buildartifact
-        projects: '$(Pipeline.Workspace)/$(solution)'
+        arguments: '-c $(buildConfiguration) --filter Category=integrationtest --collect:"XPlat Code Coverage"'
+        projects: '$(solution)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'publish code coverage'

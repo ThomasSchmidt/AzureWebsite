@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{DBC36CDA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DB1EF025-EB30-4983-AF3C-7FA7716CB505}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureWebsite.Tests", "test\AzureWebsite.Tests\AzureWebsite.Tests.csproj", "{6FBC6B45-DF1C-4F81-8CD8-0DB3B5D53CCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website.Tests", "test\AzureWebsite.Tests\Website.Tests.csproj", "{6FBC6B45-DF1C-4F81-8CD8-0DB3B5D53CCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

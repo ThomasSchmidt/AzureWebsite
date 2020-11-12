@@ -1,52 +1,48 @@
 using AzureWebsite.Controllers;
 using AzureWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
+using Xunit;
 
-namespace Tests
+namespace Website.Tests.Controllers
 {
-    public class Tests
+    [Trait("Category", "unittest")]
+    public class HomeControllerTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        [Test]
-        public void GivenValidInput_CanExecuteIndex()
+        [Fact]
+        public void Index_GivenValidInput_CanExecuteIndex()
         {
             var sut = new HomeController();
 
             var actual = sut.Index();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
         }
 
-        [Test]
-        public void GivenValidInput_CanExecutePrivacy()
+        [Fact]
+        public void Index_GivenValidInput_CanExecutePrivacy()
         {
             var sut = new HomeController();
 
             var actual = sut.Privacy();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
         }
 
-        [Test]
-        public void GivenValidInput_CanExecuteError()
+        [Fact]
+        public void Index_GivenValidInput_CanExecuteError()
         {
             var sut = new HomeController();
 
             var actual = sut.Error();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
 
             var model = ((ViewResult)actual).Model as ErrorViewModel;
-            Assert.IsNotNull(model);
-            Assert.IsNotNull(model.RequestId);
+            Assert.NotNull(model);
+            Assert.NotNull(model.RequestId);
         }
     }
 }
