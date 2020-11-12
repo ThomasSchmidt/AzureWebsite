@@ -40,7 +40,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage" --results-directory $(Pipeline.Workspace)/TestResults/unittest/'
+        arguments: '-c $(buildConfiguration) --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage" --results-directory'
         publishTestResults: false
         projects: '$(solution)'
 
