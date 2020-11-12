@@ -17,10 +17,10 @@ variables:
   system.debug: true
 
 stages:
-- stage: 'stage_build'
-  displayName: 'build'
+- stage: 'stage_test'
+  displayName: 'test'
   jobs:
-  - job: 'build'
+  - job: 'test'
     steps:
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
@@ -36,15 +36,23 @@ stages:
         command: 'restore'
 
     - task: DotNetCoreCLI@2
-      displayName: 'build solution'
-      name: 'run_build'
+      displayName: 'run tests'
+      name: 'run_tests'
       inputs:
-        command: 'build'
-        arguments: '-c $(buildConfiguration)'
+        command: test
+        arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
+        # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
+        workingDirectory: $(Pipeline.Workspace)
+        projects: '$(Pipeline.Workspace)/AzureWebsite.sln'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
     - task: PublishPipelineArtifact@1
       name: 'publish_test_artifacts'
-      displayName: 'Publish source code pipeline artifacts'
+      displayName: 'Publish source code artifact'
       inputs:
         artifact: 'build_artifact'
         targetPath: '$(build.SourcesDirectory)/'
