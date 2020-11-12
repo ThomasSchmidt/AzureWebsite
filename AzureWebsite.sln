@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureWebsite", "AzureWebsite\AzureWebsite.csproj", "{C03F4439-2702-4F17-8A96-98C51630CC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website", "src\Website\AzureWebsite.csproj", "{C03F4439-2702-4F17-8A96-98C51630CC43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{DBC36CDA-3070-4111-A669-EEA3DCFA712E}"
 	ProjectSection(SolutionItems) = preProject
