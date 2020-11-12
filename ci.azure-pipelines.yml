@@ -58,7 +58,7 @@ stages:
         targetPath: '$(build.SourcesDirectory)/'
 
 
-- stage: 'stage_test-2'
+- stage: 'stage_test_2'
   displayName: 'test'
   # dependsOn:
   # - 'stage_build'
