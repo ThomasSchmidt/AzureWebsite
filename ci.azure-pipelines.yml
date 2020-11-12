@@ -56,6 +56,15 @@ stages:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
+    - task: PowerShell@2
+      displayName: 'ls temp dir'
+      name: 'ls_tempdir'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          ls $(Agent.TempDirectory)
+
     - task: PublishPipelineArtifact@1
       name: 'publish_test_artifacts'
       displayName: 'Publish source code artifact'
