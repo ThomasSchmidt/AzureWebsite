@@ -14,7 +14,7 @@ variables:
   buildConfiguration: 'Release'
   webArtifactName: 'azure-website'
   # enables debug output
-  system.debug: true
+  # system.debug: true
 
 stages:
 - stage: 'stage_test_1'
@@ -43,7 +43,7 @@ stages:
         arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
         # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
         workingDirectory: $(Pipeline.Workspace)
-        projects: '$(Pipeline.Workspace)/AzureWebsite.sln'
+        projects: '$(solution)'
 
     - task: PublishCodeCoverageResults@1
       inputs:
