@@ -4,7 +4,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'ubuntu-18.04'
 
 variables:
   solution: '**/*.sln'
@@ -21,17 +21,19 @@ stages:
   - job: 'build'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net core sdk 3.1.x'
+      displayName: 'Use .net 5.0 sdk'
       name: 'use_sdk'
       inputs:
-          version: '3.1.x'
+          version: '5.0.x'
           packageType: 'sdk'
+
     - task: DotNetCoreCLI@2
       name: 'run_build'
       displayName: 'build solution'
       inputs:
        command: 'build'
        arguments: '-c $(buildConfiguration)'
+
     - task: DotNetCoreCLI@2
       name: 'publish_website'
       displayName: 'publish website'
@@ -41,6 +43,7 @@ stages:
         arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
+
     - task: PublishPipelineArtifact@1
       name: 'publish_pipeline_artifacts'
       displayName: 'publish pipeline artifacts'
@@ -78,7 +81,7 @@ stages:
     variables:
       WebAppName: 'schmidt-test'
     pool: 
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-18.04'
     displayName: 'Deploy test'
     strategy:
      runOnce:
@@ -106,7 +109,7 @@ stages:
     variables:
       WebAppName: 'schmidt'
     pool: 
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-18.04'
     displayName: 'Deploy production'
     strategy:
      runOnce:

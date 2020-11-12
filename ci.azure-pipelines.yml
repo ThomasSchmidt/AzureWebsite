@@ -17,8 +17,8 @@ variables:
   # system.debug: true
 
 stages:
-- stage: 'Stage_Build'
-  displayName: 'Stage - Build'
+- stage: 'stage_build'
+  displayName: 'build'
   jobs:
   - job: 'build'
     steps:
@@ -42,6 +42,13 @@ stages:
         command: 'build'
         arguments: '-c $(buildConfiguration)'
 
+- stage: 'stage_test'
+  displayName: 'test'
+  dependsOn:
+  - 'stage_build'
+  jobs:
+  - job: test
+    steps:
     - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
@@ -62,8 +69,10 @@ stages:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
-- stage: 'Stage_Other'
-  displayName: 'Stage - Other'
+- stage: 'stage_other'
+  displayName: 'other'
+  dependsOn:
+  - 'stage_test'
   jobs:
   - job: 'build'
     steps:
