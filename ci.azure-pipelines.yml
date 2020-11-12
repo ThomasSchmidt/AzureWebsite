@@ -80,6 +80,7 @@ stages:
         arguments: '--verbosity diag --no-build --collect:"XPlat Code Coverage"'
         # arguments: '-c $(buildConfiguration) --verbosity diag --no-build --collect:"XPlat Code Coverage"'
         # projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
+        workingDirectory: $(Pipeline.Workspace)
 
     - task: PublishPipelineArtifact@1
       displayName: 'publish code coverage'
