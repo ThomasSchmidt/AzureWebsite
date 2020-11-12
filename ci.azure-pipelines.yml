@@ -14,7 +14,7 @@ variables:
   buildConfiguration: 'Release'
   webArtifactName: 'azure-website'
   # enables debug output
-  # system.debug: true
+  system.debug: true
 
 stages:
 - stage: 'stage_build'
@@ -70,7 +70,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
         projects: '$(Pipeline.Workspace)/**/*Tests/*.csproj'
 
     - task: PublishPipelineArtifact@1
