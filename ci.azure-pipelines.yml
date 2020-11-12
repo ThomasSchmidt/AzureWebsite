@@ -36,7 +36,7 @@ stages:
         command: 'restore'
 
     - task: DotNetCoreCLI@2
-      displayName: 'run tests'
+      displayName: 'run unit tests'
       name: 'run_tests'
       inputs:
         command: test
@@ -89,21 +89,23 @@ stages:
         packageType: 'sdk'
 
     - task: DotNetCoreCLI@2
-      displayName: 'run tests'
+      displayName: 'run integration tests'
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --filter Category=integrationtest --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
+        publishTestResults: false
         projects: '$(solution)'
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'publish code coverage'
-      name: 'publish_coverage_file'
-      inputs:
-        artifact: 'coveragexmlartifact'
-        targetPath: '$(Agent.TempDirectory)/'
+    #- task: PublishPipelineArtifact@1
+    #  displayName: 'publish code coverage'
+    #  name: 'publish_coverage_file'
+    #  inputs:
+    #    artifact: 'coveragexmlartifact'
+    #    targetPath: '$(Agent.TempDirectory)/'
 
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/**/*.cobertura.xml'
