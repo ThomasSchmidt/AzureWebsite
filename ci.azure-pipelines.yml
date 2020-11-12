@@ -42,6 +42,14 @@ stages:
         command: 'build'
         arguments: '-c $(buildConfiguration)'
 
+    - task: PublishPipelineArtifact@1
+      name: 'publish_test_artifacts'
+      displayName: 'Publish source code pipeline artifacts'
+      inputs:
+        artifact: 'test_artifact'
+        targetPath: '$(build.SourcesDirectory)/test/'
+
+
 - stage: 'stage_test'
   displayName: 'test'
   dependsOn:
