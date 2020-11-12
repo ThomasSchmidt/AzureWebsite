@@ -40,7 +40,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
         projects: '$(solution)'
 
@@ -48,14 +48,14 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/**/*.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'
 
-    - task: PublishPipelineArtifact@1
-      name: 'publish_test_artifacts'
-      displayName: 'Publish source code artifact'
-      inputs:
-        artifact: 'build_artifact'
-        targetPath: '$(build.SourcesDirectory)/'
+    #- task: PublishPipelineArtifact@1
+    #  name: 'publish_test_artifacts'
+    #  displayName: 'Publish source code artifact'
+    #  inputs:
+    #    artifact: 'build_artifact'
+    #    targetPath: '$(build.SourcesDirectory)/'
 
 - stage: 'stage_integrationtests'
   displayName: 'run integration tests'
@@ -93,7 +93,7 @@ stages:
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/ --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest --collect:"XPlat Code Coverage"'
         publishTestResults: false
         projects: '$(solution)'
 
@@ -108,4 +108,4 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/**/*.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/integrationtest/**/*.cobertura.xml'
