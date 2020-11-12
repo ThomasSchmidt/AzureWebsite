@@ -17,10 +17,10 @@ variables:
   # system.debug: true
 
 stages:
-- stage: 'stage_test_1'
-  displayName: 'test'
+- stage: 'stage_build'
+  displayName: 'build'
   jobs:
-  - job: 'test'
+  - job: 'build'
     steps:
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
@@ -144,23 +144,3 @@ stages:
         script: |
           # Write your PowerShell commands here.
           Write-Host "Other1"
-  - job: 'other2'
-    steps:
-    - task: PowerShell@2
-      displayName: 'write other2'
-      name: 'write_other2'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Write-Host "Other2"
-  - job: 'other3'
-    steps:
-    - task: PowerShell@2
-      displayName: 'write other3'
-      name: 'write_other3'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Write-Host "Other3"
