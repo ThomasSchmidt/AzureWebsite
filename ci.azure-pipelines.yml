@@ -65,6 +65,13 @@ stages:
         artifactName: 'test_artifact'
         targetPath: '$(Pipeline.Workspace)/test/'
 
+    - task: UseDotNet@2
+      displayName: 'Use .net 5.0 sdk'
+      name: 'use_sdk'
+      inputs:
+        version: '5.0.x'
+        packageType: 'sdk'
+
     - task: DotNetCoreCLI@2
       displayName: 'run tests'
       name: 'run_tests'
@@ -90,7 +97,7 @@ stages:
   dependsOn:
   - 'stage_test'
   jobs:
-  - job: 'build'
+  - job: 'other'
     steps:
     - task: PowerShell@2
       displayName: 'write other'
