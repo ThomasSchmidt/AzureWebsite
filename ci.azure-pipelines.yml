@@ -51,7 +51,7 @@ stages:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -Recurse
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -113,7 +113,7 @@ stages:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -Recurse
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
     #- task: PublishPipelineArtifact@1
     #  displayName: 'publish code coverage'
