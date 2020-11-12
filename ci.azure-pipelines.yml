@@ -17,7 +17,7 @@ variables:
   system.debug: true
 
 stages:
-- stage: 'stage_test'
+- stage: 'stage_test_1'
   displayName: 'test'
   jobs:
   - job: 'test'
@@ -58,7 +58,7 @@ stages:
         targetPath: '$(build.SourcesDirectory)/'
 
 
-- stage: 'stage_test'
+- stage: 'stage_test-2'
   displayName: 'test'
   dependsOn:
   - 'stage_build'
