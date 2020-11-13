@@ -41,7 +41,7 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
-        publishTestResults: false
+        # publishTestResults: false
         projects: '$(solution)'
 
     - task: PowerShell@2
@@ -103,7 +103,7 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
-        publishTestResults: false
+        # publishTestResults: false
         projects: '$(solution)'
 
     - task: PowerShell@2
