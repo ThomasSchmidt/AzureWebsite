@@ -156,12 +156,12 @@ stages:
         artifact: 'integrationtest_coverage_artifact'
         targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
 
-- stage: 'stage_integrationtests'
-  displayName: 'run integration tests'
+- stage: 'stage_publish_codecoverage'
+  displayName: 'publish codecoverage reports'
   # dependsOn:
   # - 'stage_build'
   jobs:
-  - job: 'test'
+  - job: 'publish'
     steps:
     
     - task: DownloadPipelineArtifact@2
