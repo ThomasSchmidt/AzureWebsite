@@ -189,6 +189,15 @@ stages:
         targetdir: '$(Pipeline.Workspace)/TestResults/coverage/'
         reporttypes: "HtmlInline_AzurePipelines;Cobertura"
 
+    - task: PowerShell@2
+      displayName: 'list workspace'
+      name: 'list_workspace_coverage'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/coverage/ -File -Recurse
+
     - task: PublishCodeCoverageResults@1
       name: 'publish_coverage_report'
       displayName: 'publish coverage report'
