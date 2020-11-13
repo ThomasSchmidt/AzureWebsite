@@ -54,54 +54,27 @@ stages:
           # Write your PowerShell commands here.
           Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
-    #- task: PublishCodeCoverageResults@1
-    #  inputs:
-    #    codeCoverageTool: 'Cobertura'
-    #    #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-    #    summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml'
-
     - task: PublishTestResults@2
+      displayName: 'publish unittest results'
+      name: 'publish_unittest_results'
       inputs:
         testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
         testResultsFiles: '**/*.trx' 
         searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
         mergeTestResults: true # Optional
-        #failTaskOnFailedTests: false # Optional
-        #testRunTitle: # Optional
-        #buildPlatform: # Optional
-        #buildConfiguration: # Optional
-        #publishRunAttachments: true # Optional
     
     - task: PublishPipelineArtifact@1
+      displayName: 'publish unittest coverage artifact'
       name: 'publish_unittest_artifacts'
-      displayName: 'Publish unit test coverage artifact'
       inputs:
         artifact: 'unittest_coverage_artifact'
         targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
 
 - stage: 'stage_integrationtests'
   displayName: 'run integration tests'
-  # dependsOn:
-  # - 'stage_build'
   jobs:
   - job: 'test'
     steps:
-    #- checkout: none
-    
-    #- task: DownloadPipelineArtifact@2
-    #  inputs:
-    #    buildType: 'current'
-    #    artifactName: 'build_artifact'
-    #    targetPath: '$(Pipeline.Workspace)/buildartifact'
-
-    #- task: PowerShell@2
-    #  displayName: 'list workspace'
-    #  name: 'list_workspace_buildartifact'
-    #  inputs:
-    #    targetType: 'inline'
-    #    script: |
-    #      # Write your PowerShell commands here.
-    #      ls $(Pipeline.Workspace)/buildartifact
 
     - task: UseDotNet@2
       displayName: 'Use .net 5.0 sdk'
@@ -129,19 +102,6 @@ stages:
           # Write your PowerShell commands here.
           Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
-    #- task: PublishPipelineArtifact@1
-    #  displayName: 'publish code coverage'
-    #  name: 'publish_coverage_file'
-    #  inputs:
-    #    artifact: 'coveragexmlartifact'
-    #    targetPath: '$(Agent.TempDirectory)/'
-
-    #- task: PublishCodeCoverageResults@1
-    #  inputs:
-    #    codeCoverageTool: 'Cobertura'
-    #    #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-    #    summaryFileLocation: '$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
-
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
@@ -158,8 +118,6 @@ stages:
 
 - stage: 'stage_publish_codecoverage'
   displayName: 'publish codecoverage reports'
-  # dependsOn:
-  # - 'stage_build'
   jobs:
   - job: 'publish'
     steps:
@@ -183,7 +141,7 @@ stages:
     #Merging code coverage reports into a full Cobertura report
     - task: reportgenerator@4
       name: "generate_report"
-      displayName: "Generate code coverage report"
+      displayName: "generate code coverage report"
       inputs:
         reports: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml;$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
         targetdir: '$(Pipeline.Workspace)/TestResults/coverage/'
