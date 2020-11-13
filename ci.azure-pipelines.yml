@@ -166,6 +166,7 @@ stages:
     
     - task: DownloadPipelineArtifact@2
       name: 'download_unittest_coverage_artifact'
+      displayName: 'download unittest coverage'
       inputs:
         buildType: 'current'
         artifactName: 'unittest_coverage_artifact'
@@ -173,6 +174,7 @@ stages:
 
     - task: DownloadPipelineArtifact@2
       name: 'download_integrationtest_coverage_artifact'
+      displayName: 'download integrationtest coverage'
       inputs:
         buildType: 'current'
         artifactName: 'integrationtest_coverage_artifact'
