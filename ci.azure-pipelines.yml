@@ -41,7 +41,8 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
-        # publishTestResults: false
+        publishTestResults: false
+        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
     - task: PowerShell@2
@@ -59,6 +60,18 @@ stages:
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
         summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'
 
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/*.trx' 
+        searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
+        mergeTestResults: true # Optional
+        #failTaskOnFailedTests: false # Optional
+        #testRunTitle: # Optional
+        #buildPlatform: # Optional
+        #buildConfiguration: # Optional
+        #publishRunAttachments: true # Optional
+    
     #- task: PublishPipelineArtifact@1
     #  name: 'publish_test_artifacts'
     #  displayName: 'Publish source code artifact'
@@ -103,7 +116,8 @@ stages:
       inputs:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
-        # publishTestResults: false
+        publishTestResults: false
+        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
     - task: PowerShell@2
