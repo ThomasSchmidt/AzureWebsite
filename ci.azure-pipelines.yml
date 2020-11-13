@@ -45,14 +45,14 @@ stages:
         #arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
-    - task: PowerShell@2
-      displayName: 'list workspace'
-      name: 'list_workspace_unittest'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
+    #- task: PowerShell@2
+    #  displayName: 'list workspace'
+    #  name: 'list_workspace_unittest'
+    #  inputs:
+    #    targetType: 'inline'
+    #    script: |
+    #      # Write your PowerShell commands here.
+    #      Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
     - task: PublishTestResults@2
       displayName: 'publish unittest results'
@@ -92,15 +92,6 @@ stages:
         publishTestResults: false
         #arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
-
-    - task: PowerShell@2
-      displayName: 'list workspace'
-      name: 'list_workspace_integrationtest'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
     - task: PublishTestResults@2
       inputs:
