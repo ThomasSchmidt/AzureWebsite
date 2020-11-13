@@ -205,3 +205,4 @@ stages:
         codeCoverageTool: 'Cobertura'
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
         summaryFileLocation: '$(Pipeline.Workspace)/TestResults/coverage/cobertura.xml'
+        reportDirectory: '$(Pipeline.Workspace)/TestResults/coverage/'
