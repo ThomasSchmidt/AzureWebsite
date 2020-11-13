@@ -58,7 +58,7 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml'
 
     - task: PublishTestResults@2
       inputs:
