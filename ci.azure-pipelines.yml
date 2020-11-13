@@ -140,4 +140,12 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/integrationtest/**/*.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/*.trx' 
+        searchFolder: '$(Pipeline.Workspace)/TestResults/integrationtest/' # Optional
+        mergeTestResults: true # Optional
+
