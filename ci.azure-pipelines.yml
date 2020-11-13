@@ -54,11 +54,11 @@ stages:
           # Write your PowerShell commands here.
           Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml'
+    #- task: PublishCodeCoverageResults@1
+    #  inputs:
+    #    codeCoverageTool: 'Cobertura'
+    #    #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+    #    summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml'
 
     - task: PublishTestResults@2
       inputs:
@@ -72,12 +72,12 @@ stages:
         #buildConfiguration: # Optional
         #publishRunAttachments: true # Optional
     
-    #- task: PublishPipelineArtifact@1
-    #  name: 'publish_test_artifacts'
-    #  displayName: 'Publish source code artifact'
-    #  inputs:
-    #    artifact: 'build_artifact'
-    #    targetPath: '$(build.SourcesDirectory)/'
+    - task: PublishPipelineArtifact@1
+      name: 'publish_unittest_artifacts'
+      displayName: 'Publish unit test coverage artifact'
+      inputs:
+        artifact: 'unittest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
 
 - stage: 'stage_integrationtests'
   displayName: 'run integration tests'
@@ -148,4 +148,11 @@ stages:
         testResultsFiles: '**/*.trx' 
         searchFolder: '$(Pipeline.Workspace)/TestResults/integrationtest/' # Optional
         mergeTestResults: true # Optional
+
+    - task: PublishPipelineArtifact@1
+      name: 'publish_integrationtest_artifacts'
+      displayName: 'Publish unit test coverage artifact'
+      inputs:
+        artifact: 'integrationtest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
 
