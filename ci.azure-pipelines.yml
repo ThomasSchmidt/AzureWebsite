@@ -156,3 +156,39 @@ stages:
         artifact: 'integrationtest_coverage_artifact'
         targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
 
+- stage: 'stage_integrationtests'
+  displayName: 'run integration tests'
+  # dependsOn:
+  # - 'stage_build'
+  jobs:
+  - job: 'test'
+    steps:
+    
+    - task: DownloadPipelineArtifact@2
+      name: 'download_unittest_coverage_artifact'
+      inputs:
+        buildType: 'current'
+        artifactName: 'unittest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
+
+    - task: DownloadPipelineArtifact@2
+      name: 'download_integrationtest_coverage_artifact'
+      inputs:
+        buildType: 'current'
+        artifactName: 'integrationtest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
+
+    #Merging code coverage reports into a full Cobertura report
+    - task: reportgenerator@4
+      name: "generate_report"
+      displayName: "Generate code coverage report"
+      inputs:
+        reports: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml;$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
+        targetdir: '$(Pipeline.Workspace)/TestResults/coverage/'
+        reporttypes: "HtmlInline_AzurePipelines;Cobertura"
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/coverage/*/*.cobertura.xml'
