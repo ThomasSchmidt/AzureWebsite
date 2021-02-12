@@ -5,8 +5,8 @@ trigger:
 - feature/*
 
 pool:
-  # vmImage: 'ubuntu-16.04'
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-18.04'
+  # vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
@@ -17,16 +17,16 @@ variables:
   # system.debug: true
 
 stages:
-- stage: 'Stage_Build'
-  displayName: 'Stage - Build'
+- stage: 'stage_unittest'
+  displayName: 'run unit tests'
   jobs:
-  - job: 'build'
+  - job: 'test'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net core sdk 3.1.x'
+      displayName: 'Use .net 5.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '3.1.x'
+        version: '5.0.x'
         packageType: 'sdk'
 
     - task: DotNetCoreCLI@2
@@ -36,41 +36,122 @@ stages:
         command: 'restore'
 
     - task: DotNetCoreCLI@2
-      displayName: 'build solution'
-      name: 'run_build'
-      inputs:
-        command: 'build'
-        arguments: '-c $(buildConfiguration)'
-
-    - task: DotNetCoreCLI@2
-      displayName: 'run tests'
+      displayName: 'run unit tests'
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
-        projects: '**/*Tests/*.csproj'
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+        publishTestResults: false
+        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --collect:"XPlat Code Coverage"'
+        projects: '$(solution)'
+
+    #- task: PowerShell@2
+    #  displayName: 'list workspace'
+    #  name: 'list_workspace_unittest'
+    #  inputs:
+    #    targetType: 'inline'
+    #    script: |
+    #      # Write your PowerShell commands here.
+    #      Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
+
+    - task: PublishTestResults@2
+      displayName: 'publish unittest results'
+      name: 'publish_unittest_results'
+      inputs:
+        testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/*.trx' 
+        searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
+        mergeTestResults: true # Optional
+    
+    - task: PublishPipelineArtifact@1
+      displayName: 'publish unittest coverage artifact'
+      name: 'publish_unittest_artifacts'
+      inputs:
+        artifact: 'unittest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
+
+- stage: 'stage_integrationtests'
+  displayName: 'run integration tests'
+  jobs:
+  - job: 'test'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Use .net 5.0 sdk'
+      name: 'use_sdk'
+      inputs:
+        version: '5.0.x'
+        packageType: 'sdk'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'run integration tests'
+      name: 'run_tests'
+      inputs:
+        command: test
+        arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
+        publishTestResults: false
+        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
+        projects: '$(solution)'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        testResultsFiles: '**/*.trx' 
+        searchFolder: '$(Pipeline.Workspace)/TestResults/integrationtest/' # Optional
+        mergeTestResults: true # Optional
 
     - task: PublishPipelineArtifact@1
-      name: 'publish_coverage_file'
+      name: 'publish_integrationtest_artifacts'
+      displayName: 'Publish unit test coverage artifact'
       inputs:
-        artifact: 'coveragexmlartifact'
-        targetPath: '$(Agent.TempDirectory)\'
+        artifact: 'integrationtest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
 
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
-
-- stage: 'Stage_Wtf'
-  displayName: 'Stage - Wtf'
+- stage: 'stage_publish_codecoverage'
+  displayName: 'publish codecoverage reports'
   jobs:
-  - job: 'build'
+  - job: 'publish'
     steps:
+    
+    - task: DownloadPipelineArtifact@2
+      name: 'download_unittest_coverage_artifact'
+      displayName: 'download unittest coverage'
+      inputs:
+        buildType: 'current'
+        artifactName: 'unittest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
+
+    - task: DownloadPipelineArtifact@2
+      name: 'download_integrationtest_coverage_artifact'
+      displayName: 'download integrationtest coverage'
+      inputs:
+        buildType: 'current'
+        artifactName: 'integrationtest_coverage_artifact'
+        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
+
+    #Merging code coverage reports into a full Cobertura report
+    - task: reportgenerator@4
+      name: "generate_report"
+      displayName: "generate code coverage report"
+      inputs:
+        reports: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml;$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
+        targetdir: '$(Pipeline.Workspace)/TestResults/coverage/'
+        reporttypes: "HtmlInline_AzurePipelines;Cobertura"
+
     - task: PowerShell@2
-      displayName: 'write wtf'
-      name: 'write_wtf'
+      displayName: 'list workspace'
+      name: 'list_workspace_coverage'
       inputs:
         targetType: 'inline'
         script: |
           # Write your PowerShell commands here.
-          Write-Host "wtf"
+          Get-ChildItem $(Pipeline.Workspace)/TestResults/coverage/ -File -Recurse
+
+    - task: PublishCodeCoverageResults@1
+      name: 'publish_coverage_report'
+      displayName: 'publish coverage report'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/coverage/*.xml'
+        #reportDirectory: '$(Pipeline.Workspace)/TestResults/coverage/'

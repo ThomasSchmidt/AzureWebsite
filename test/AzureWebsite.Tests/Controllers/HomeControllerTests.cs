@@ -1,52 +1,68 @@
 using AzureWebsite.Controllers;
 using AzureWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
+using Microsoft.Extensions.Options;
+using Website.Infrastructure;
+using Xunit;
 
-namespace Tests
+namespace Website.Tests.Controllers
 {
-    public class Tests
+    [Trait("Category", "unittest")]
+    public class HomeControllerTests
     {
-        [SetUp]
-        public void Setup()
+        [Fact]
+        public void Index_GivenValidInput_CanExecuteIndex()
         {
-        }
-
-        [Test]
-        public void GivenValidInput_CanExecuteIndex()
-        {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Index();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
         }
 
-        [Test]
-        public void GivenValidInput_CanExecutePrivacy()
+        [Fact]
+        public void Index_GivenValidInput_CanExecutePrivacy()
         {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Privacy();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
         }
 
-        [Test]
-        public void GivenValidInput_CanExecuteError()
+        [Fact]
+        public void Index_GivenValidInput_CanExecuteError()
         {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Error();
 
-            Assert.IsNotNull(actual);
-            Assert.That(actual, Is.TypeOf<ViewResult>());
+            Assert.NotNull(actual);
+            Assert.IsType<ViewResult>(actual);
 
             var model = ((ViewResult)actual).Model as ErrorViewModel;
-            Assert.IsNotNull(model);
-            Assert.IsNotNull(model.RequestId);
+            Assert.NotNull(model);
+            Assert.NotNull(model.RequestId);
+        }
+
+        private IOptionsSnapshot<Settings> GetSettings()
+        {
+            return new OptionsSettings();
+        }
+
+        public class OptionsSettings : IOptionsSnapshot<Settings>
+        {
+            public Settings Value => new Settings();
+
+            public Settings Get(string name)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 }
