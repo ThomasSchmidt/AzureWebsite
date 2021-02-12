@@ -18,5 +18,22 @@ namespace Website.Tests.IntegrationTests
 
             Assert.NotNull(content);
         }
+
+        [Fact]
+        public async Task Crm_GivenValidOrder_CanSendToCrm()
+        {
+            // var crmService = GetCrmService();
+
+            // var dummyOrder = GetDummyOrder();
+            // dummyOrder.Navn = "test-mand";
+
+            // var crmResponse = crmService.PlaceOrder(dummyOrder);
+
+            // Assert.True(crmResponse.OrderId > 0);
+
+            // var crmOrder = crmService.GetOrder(crmResponse.OrderId);
+
+            // Assert.Equal(crmOrder.Navn, "test-mand");
+        }
     }
 }

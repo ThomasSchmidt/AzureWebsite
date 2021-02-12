@@ -1,6 +1,8 @@
 using AzureWebsite.Controllers;
 using AzureWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Website.Infrastructure;
 using Xunit;
 
 namespace Website.Tests.Controllers
@@ -11,7 +13,8 @@ namespace Website.Tests.Controllers
         [Fact]
         public void Index_GivenValidInput_CanExecuteIndex()
         {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Index();
 
@@ -22,7 +25,8 @@ namespace Website.Tests.Controllers
         [Fact]
         public void Index_GivenValidInput_CanExecutePrivacy()
         {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Privacy();
 
@@ -33,7 +37,8 @@ namespace Website.Tests.Controllers
         [Fact]
         public void Index_GivenValidInput_CanExecuteError()
         {
-            var sut = new HomeController();
+            var settings = GetSettings();
+            var sut = new HomeController(settings);
 
             var actual = sut.Error();
 
@@ -43,6 +48,21 @@ namespace Website.Tests.Controllers
             var model = ((ViewResult)actual).Model as ErrorViewModel;
             Assert.NotNull(model);
             Assert.NotNull(model.RequestId);
+        }
+
+        private IOptionsSnapshot<Settings> GetSettings()
+        {
+            return new OptionsSettings();
+        }
+
+        public class OptionsSettings : IOptionsSnapshot<Settings>
+        {
+            public Settings Value => new Settings();
+
+            public Settings Get(string name)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 }

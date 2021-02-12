@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Website.Infrastructure;
 
 namespace AzureWebsite
 {
@@ -21,6 +22,8 @@ namespace AzureWebsite
             services.AddApplicationInsightsTelemetry();
             services.AddHealthChecks();
             services.AddControllersWithViews();
+            services.AddAzureAppConfiguration();
+            services.Configure<Settings>(Configuration.GetSection("Website:Settings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +40,9 @@ namespace AzureWebsite
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
-            
+
+            app.UseAzureAppConfiguration();
+
             app.UseStaticFiles();
 
             app.UseRouting();
