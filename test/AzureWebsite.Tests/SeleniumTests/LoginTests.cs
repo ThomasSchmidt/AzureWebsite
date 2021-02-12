@@ -10,7 +10,7 @@ namespace Website.Tests.SeleniumTests
     /// https://docs.microsoft.com/en-us/azure/devops/pipelines/test/continuous-test-selenium?view=azure-devops
     /// </summary>
     [Trait("Category", "seleniumtest")]
-    public class LoginTests : IDisposable
+    public class LoginTests : TestBase, IDisposable
     {
         private readonly IWebDriver _driver;
 
@@ -48,14 +48,16 @@ namespace Website.Tests.SeleniumTests
 
             // find username text box:
             var usernameEl = _driver.FindElement(By.Name("username"));
-            
+
             // put in username
-            usernameEl.SendKeys("ThomasSchmidtTest");
+            var username = Configuration["Tests:Integration:CancerforumUsername"];
+            usernameEl.SendKeys(username);
 
             // find password text box
             var passwordEl = _driver.FindElement(By.Name("password"));
 
             // put in password
+            var password = Configuration["Tests:Integration:CancerforumPassword"];
             passwordEl.SendKeys("MegetLangtPassword1");
 
             // find login button - modal__form__submit btn btn--round btn--cta
@@ -66,7 +68,8 @@ namespace Website.Tests.SeleniumTests
             loginButtonEl.Click();
 
             // navigate to front page again and verify
-            _driver.Navigate().GoToUrl("https://www.cancerforum.dk/");
+            var url = Configuration["Tests:Integration:CancerforumUrl"];
+            _driver.Navigate().GoToUrl(url);
 
             // check if we have the login icon - user-bar__content__login__name
             var waitForVerifyEl = WaitFor(By.ClassName("user-bar__content__login__name"));

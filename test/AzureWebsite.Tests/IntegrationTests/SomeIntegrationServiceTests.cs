@@ -20,7 +20,7 @@ namespace Website.Tests.IntegrationTests
         }
 
         [Fact]
-        public async Task Crm_GivenValidOrder_CanSendToCrm()
+        public void Crm_GivenValidOrder_CanSendToCrm()
         {
             // var crmService = GetCrmService();
 
