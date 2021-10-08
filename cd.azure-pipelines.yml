@@ -87,38 +87,10 @@ stages:
             command: 'test'
             arguments: '--collect:"XPlat Code Coverage"'
 
-- stage: 'stage_deploy_test'
-  displayName: 'deploy to test'
-  dependsOn: 
-  - 'stage_build'
-  - 'stage_test'
-  jobs:
-  - deployment: 'deployment_schmidt_test'
-    environment: 'test'
-    variables:
-      WebAppName: 'schmidt-test'
-    pool: 
-      vmImage: 'ubuntu-20.04'
-    displayName: 'Deploy test'
-    strategy:
-     runOnce:
-       deploy:
-        steps:
-          - task: AzureRmWebAppDeployment@4
-            displayName: 'schmidt-test app service deploy'
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
-              appType: 'webAppLinux'
-              WebAppName: '$(WebAppName)'
-              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
-              RuntimeStack: 'DOTNETCORE|LTS'
-
 - stage: 'stage_deploy_production'
   dependsOn: 
   - 'stage_build'
   - 'stage_test'
-  - 'stage_deploy_test'
   displayName: 'deploy production stage'
   jobs:
   - deployment: 'deploy_schmidt_production'
