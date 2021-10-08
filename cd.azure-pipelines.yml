@@ -1,8 +1,16 @@
 name: 'CD'
 
-trigger:
-- master
-
+# this is being defined in app-ci pipeline
+resources:
+  pipelines:
+  - pipeline: CI
+    source: CI
+    trigger: 
+      branches:
+        include: 
+        - master
+        exclude:
+        - feature/*
 pool:
   vmImage: 'ubuntu-20.04'
 
