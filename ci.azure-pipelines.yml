@@ -78,11 +78,12 @@ stages:
     steps:
 
     - task: UseDotNet@2
-      displayName: 'Use .net 5.0 sdk'
+      displayName: 'Use .net 6.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '5.0.x'
+        version: '6.0.x'
         packageType: 'sdk'
+        includePreviewVersions: true
 
     - task: DotNetCoreCLI@2
       displayName: 'run integration tests'

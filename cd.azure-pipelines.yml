@@ -4,7 +4,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-18.04'
+  vmImage: 'ubuntu-20.04'
 
 variables:
   solution: '**/*.sln'
@@ -110,7 +110,7 @@ stages:
     variables:
       WebAppName: 'schmidt'
     pool: 
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-20.04'
     displayName: 'Deploy production'
     strategy:
      runOnce:
