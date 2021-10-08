@@ -17,7 +17,8 @@ namespace AzureWebsite
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();
-				})
+				});
+				/*
 				.ConfigureAppConfiguration(config =>
 				{
 					var settings = config.Build();
@@ -34,5 +35,6 @@ namespace AzureWebsite
 							});
 					});
 				});
+				*/
 	}
 }

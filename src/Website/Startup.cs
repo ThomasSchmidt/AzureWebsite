@@ -41,7 +41,7 @@ namespace AzureWebsite
                 app.UseHttpsRedirection();
             }
 
-            app.UseAzureAppConfiguration();
+            //app.UseAzureAppConfiguration();
 
             app.UseStaticFiles();
 

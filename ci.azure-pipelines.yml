@@ -5,7 +5,7 @@ trigger:
 - feature/*
 
 pool:
-  vmImage: 'ubuntu-18.04'
+  vmImage: 'ubuntu-20.04'
   # vmImage: 'windows-latest'
 
 variables:
@@ -23,10 +23,10 @@ stages:
   - job: 'test'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net 5.0 sdk'
+      displayName: 'Use .net 6.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '5.0.x'
+        version: '6.0.x'
         packageType: 'sdk'
 
     - task: DotNetCoreCLI@2
