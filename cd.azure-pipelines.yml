@@ -59,6 +59,14 @@ stages:
   jobs:
     - job: 'test'
       steps:
+        - task: UseDotNet@2
+          displayName: 'Use .net 6.0 sdk'
+          name: 'use_sdk'
+          inputs:
+            version: '6.0.x'
+            packageType: 'sdk'
+            includePreviewVersions: true
+
         #- task: DownloadPipelineArtifact@2
         #  inputs:
         #    buildType: 'current'
