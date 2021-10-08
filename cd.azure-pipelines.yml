@@ -26,6 +26,7 @@ stages:
       inputs:
           version: '6.0.x'
           packageType: 'sdk'
+          includePreviewVersions: true
 
     - task: DotNetCoreCLI@2
       name: 'run_build'
