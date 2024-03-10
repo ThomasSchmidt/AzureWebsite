@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace AzureWebsite
@@ -9,32 +9,46 @@ namespace AzureWebsite
 	{
 		public static void Main(string[] args)
 		{
-			CreateHostBuilder(args).Build().Run();
-		}
+			var builder = WebApplication.CreateBuilder(args);
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
-				.ConfigureWebHostDefaults(webBuilder =>
-				{
-					webBuilder.UseStartup<Startup>();
-				});
-				/*
-				.ConfigureAppConfiguration(config =>
-				{
-					var settings = config.Build();
-					var appConfigConnectionString = settings.GetConnectionString("AppConfig");
-					config.AddAzureAppConfiguration(options =>
-					{
-						options
-							.Connect(appConfigConnectionString)
-							.ConfigureRefresh(refreshOptions =>
-							{
-								refreshOptions
-									.Register("Website:Sentinel", true)
-									.SetCacheExpiration(TimeSpan.FromSeconds(10));
-							});
-					});
-				});
-				*/
+			builder.Services.AddMvc();
+			builder.Services.AddApplicationInsightsTelemetry();
+			builder.Services.AddHealthChecks();
+			builder.Services.AddControllersWithViews();
+
+			var app = builder.Build();
+
+			////builder.Services.Configure<Settings>(builder.Configuration.GetSection("Website:Settings"));
+
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Home/Error");
+				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+				app.UseHsts();
+				// app.UseHttpsRedirection();
+			}
+
+			//app.UseAzureAppConfiguration();
+
+			app.UseStaticFiles();
+
+			app.UseRouting();
+
+			app.UseAuthorization();
+
+			app.MapHealthChecks("/healtcheck");
+
+
+			app.UseEndpoints(endpoints =>
+			{
+				_ = endpoints.MapDefaultControllerRoute();
+			});
+
+			app.Run();
+		}
 	}
 }

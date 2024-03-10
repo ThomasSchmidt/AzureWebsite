@@ -23,10 +23,10 @@ stages:
   - job: 'test'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net 6.0 sdk'
+      displayName: 'Use .net 8.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '6.0.x'
+        version: '8.0.x'
         packageType: 'sdk'
         includePreviewVersions: true
 
@@ -43,17 +43,8 @@ stages:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
-        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
-    #- task: PowerShell@2
-    #  displayName: 'list workspace'
-    #  name: 'list_workspace_unittest'
-    #  inputs:
-    #    targetType: 'inline'
-    #    script: |
-    #      # Write your PowerShell commands here.
-    #      Get-ChildItem $(Pipeline.Workspace)/TestResults/ -File -Recurse
 
     - task: PublishTestResults@2
       displayName: 'publish unittest results'
@@ -78,10 +69,10 @@ stages:
     steps:
 
     - task: UseDotNet@2
-      displayName: 'Use .net 6.0 sdk'
+      displayName: 'Use .net 8.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '6.0.x'
+        version: '8.0.x'
         packageType: 'sdk'
         includePreviewVersions: true
 
@@ -92,7 +83,6 @@ stages:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
-        #arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
         projects: '$(solution)'
 
     - task: PublishTestResults@2

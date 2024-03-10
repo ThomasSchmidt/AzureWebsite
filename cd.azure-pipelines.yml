@@ -29,10 +29,10 @@ stages:
   - job: 'build'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net 6.0 sdk'
+      displayName: 'Use .net 8.0 sdk'
       name: 'use_sdk'
       inputs:
-          version: '6.0.x'
+          version: '8.0.x'
           packageType: 'sdk'
           includePreviewVersions: true
 
@@ -68,10 +68,10 @@ stages:
     - job: 'test'
       steps:
         - task: UseDotNet@2
-          displayName: 'Use .net 6.0 sdk'
+          displayName: 'Use .net 8.0 sdk'
           name: 'use_sdk'
           inputs:
-            version: '6.0.x'
+            version: '8.0.x'
             packageType: 'sdk'
             includePreviewVersions: true
 
@@ -98,7 +98,7 @@ stages:
     variables:
       WebAppName: 'schmidt'
     pool: 
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-latest'
     displayName: 'Deploy production'
     strategy:
      runOnce:
