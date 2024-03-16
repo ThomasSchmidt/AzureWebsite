@@ -18,7 +18,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  webArtifactName: 'azure-website'
+  webArtifactName: 'website'
   # enables debug output
   system.debug: true
 
@@ -49,7 +49,7 @@ stages:
       inputs:
         command: 'publish'
         publishWebProjects: false
-        arguments: '$(Build.SourcesDirectory)/src/Website/Website.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
+        arguments: '$(Build.SourcesDirectory)/src/Website/Website.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish/website -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
 
@@ -58,7 +58,7 @@ stages:
       displayName: 'publish pipeline artifacts'
       inputs:
         artifact: '$(webArtifactName)'
-        targetPath: '$(Build.ArtifactStagingDirectory)'
+        targetPath: '$(Build.ArtifactStagingDirectory)/publish/website'
 
 - stage: 'stage_test'
   displayName: 'run tests'
@@ -88,9 +88,6 @@ stages:
             arguments: '--collect:"XPlat Code Coverage"'
 
 - stage: 'stage_deploy_production'
-  dependsOn: 
-  - 'stage_build'
-  - 'stage_test'
   displayName: 'deploy production stage'
   jobs:
   - deployment: 'deploy_schmidt_production'
@@ -104,6 +101,12 @@ stages:
      runOnce:
        deploy:
         steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download website artifact for $(Release.EnvironmentName)'
+            inputs:
+                buildType: 'current'
+                artifactName: '$(webArtifactName)'
+                targetPath: '$(Pipeline.Workspace)/publish/Website'
           - task: AzureRmWebAppDeployment@4
             displayName: 'schmidt app service deploy'
             inputs:
@@ -111,5 +114,5 @@ stages:
               azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
               appType: 'webAppLinux'
               WebAppName: '$(WebAppName)'
-              packageForLinux: '$(System.WorkFolder)/**/*.zip'
+              packageForLinux: '$(Pipeline.Workspace)/publish/Website/*.zip'
               RuntimeStack: 'DOTNETCORE|LTS'
