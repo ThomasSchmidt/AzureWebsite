@@ -20,7 +20,7 @@ variables:
   buildConfiguration: 'Release'
   webArtifactName: 'website'
   # enables debug output
-  system.debug: true
+  system.debug: false
 
 stages:
 - stage: 'stage_build'
@@ -80,17 +80,17 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
-            arguments: ' --collect:"XPlat Code Coverage"'
-            publishTestResults: true
+            arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+            publishTestResults: false
 
-        # - task: PublishTestResults@2
-        #   displayName: 'publish unittest results'
-        #   name: 'publish_unittest_results'
-        #   inputs:
-        #     testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-        #     testResultsFiles: '**/*.trx' 
-        #     searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
-        #     mergeTestResults: true # Optional
+        - task: PublishTestResults@2
+          displayName: 'publish unittest results'
+          name: 'publish_unittest_results'
+          inputs:
+            testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+            testResultsFiles: '**/*.trx' 
+            searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
+            mergeTestResults: true # Optional
 
 
 - stage: 'stage_deploy_production'
