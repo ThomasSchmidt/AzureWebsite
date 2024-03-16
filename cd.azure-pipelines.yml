@@ -81,16 +81,15 @@ stages:
           inputs:
             command: 'test'
             arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
-            publishTestResults: false
+            publishTestResults: true
 
-        - task: PublishTestResults@2
-          displayName: 'publish unittest results'
-          name: 'publish_unittest_results'
+        - task: PublishCodeCoverageResults@2
+          name: 'publish_coverage_report'
+          displayName: 'publish coverage report'
           inputs:
-            testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-            testResultsFiles: '**/*.trx' 
-            searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
-            mergeTestResults: true # Optional
+            codeCoverageTool: 'Cobertura'
+            #/home/vsts/work/1/TestResults/unittest/6a87c1ee-f376-4d26-8d8d-701b60ceff3e/coverage.cobertura.xml
+            summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'
 
 
 - stage: 'stage_deploy_production'
