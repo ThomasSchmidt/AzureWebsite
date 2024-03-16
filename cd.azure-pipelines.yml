@@ -129,4 +129,4 @@ stages:
                 appType: 'webAppLinux'
                 WebAppName: '$(WebAppName)'
                 packageForLinux: '$(Pipeline.Workspace)/publish/Website/*.zip'
-                RuntimeStack: 'DOTNETCORE|LTS'
+                RuntimeStack: 'DOTNETCORE|8.0'
