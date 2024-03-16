@@ -1,7 +1,6 @@
 name: 'CI'
 
 trigger:
-- master
 - feature/*
 
 pool:

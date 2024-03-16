@@ -18,8 +18,6 @@ namespace AzureWebsite
 
 			var app = builder.Build();
 
-			////builder.Services.Configure<Settings>(builder.Configuration.GetSection("Website:Settings"));
-
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
@@ -40,7 +38,7 @@ namespace AzureWebsite
 
 			app.UseAuthorization();
 
-			app.MapHealthChecks("/healtcheck");
+			app.MapHealthChecks("/healthcheck");
 
 
 			app.UseEndpoints(endpoints =>

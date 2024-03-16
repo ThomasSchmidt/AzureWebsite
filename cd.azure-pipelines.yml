@@ -75,20 +75,25 @@ stages:
             packageType: 'sdk'
             includePreviewVersions: true
 
-        #- task: DownloadPipelineArtifact@2
-        #  inputs:
-        #    buildType: 'current'
-        #    artifactName: '$(webArtifactName)'
-        #    targetPath: '$(Pipeline.Workspace)/website-artifact'
         - task: DotNetCoreCLI@2
           name: 'run_test'
           displayName: 'run tests'
           inputs:
             command: 'test'
-            arguments: '--collect:"XPlat Code Coverage"'
+            arguments: '--logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+
+        - task: PublishTestResults@2
+          displayName: 'publish unittest results'
+          name: 'publish_unittest_results'
+          inputs:
+            testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+            testResultsFiles: '**/*.trx' 
+            searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
+            mergeTestResults: true # Optional
+
 
 - stage: 'stage_deploy_production'
-  displayName: 'deploy production stage'
+  displayName: 'deploy production'
   jobs:
   - deployment: 'deploy_schmidt_production'
     environment: 'production'
@@ -98,21 +103,22 @@ stages:
       vmImage: 'ubuntu-latest'
     displayName: 'Deploy production'
     strategy:
-     runOnce:
-       deploy:
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download website artifact for $(Release.EnvironmentName)'
-            inputs:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Download website artifact'
+              inputs:
                 buildType: 'current'
                 artifactName: '$(webArtifactName)'
                 targetPath: '$(Pipeline.Workspace)/publish/Website'
-          - task: AzureRmWebAppDeployment@4
-            displayName: 'schmidt app service deploy'
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
-              appType: 'webAppLinux'
-              WebAppName: '$(WebAppName)'
-              packageForLinux: '$(Pipeline.Workspace)/publish/Website/*.zip'
-              RuntimeStack: 'DOTNETCORE|LTS'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: 'schmidt app service deploy'
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
+                appType: 'webAppLinux'
+                WebAppName: '$(WebAppName)'
+                packageForLinux: '$(Pipeline.Workspace)/publish/Website/*.zip'
+                RuntimeStack: 'DOTNETCORE|LTS'

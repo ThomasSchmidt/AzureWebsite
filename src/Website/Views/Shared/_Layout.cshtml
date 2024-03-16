@@ -4,21 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Schmidt</title>
-    <link rel="stylesheet" asp-href-include="~/css/*.min.*" asp-append-version="true" />
+    <link rel="stylesheet" asp-href-include="~/css/*.*" asp-append-version="true" />
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body>
     <header>
         <nav>
             <div>
-                <a asp-area="" asp-controller="Home" asp-action="Index">Schmidt</a>
                 <div>
                     <ul>
                         <li>
                             <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li>
-                            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                 </div>
@@ -26,7 +22,6 @@
         </nav>
     </header>
     <div class="container">
-        <partial name="_CookieConsentPartial" />
         <main role="main">
             @RenderBody()
         </main>
