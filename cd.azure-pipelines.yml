@@ -61,7 +61,7 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/publish/website'
 
 - stage: 'stage_test'
-  displayName: 'run tests'
+  displayName: 'test'
   dependsOn:
   - 'stage_build'
   jobs:
@@ -84,6 +84,8 @@ stages:
             publishTestResults: false
 
         - task: PublishTestResults@2
+          name: 'publish_test_results'
+          displayName: 'publish test results'
           inputs:
             testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
             testResultsFiles: '$(Pipeline.Workspace)/TestResults/unittest/**/*.trx' 
@@ -91,16 +93,15 @@ stages:
             mergeTestResults: true # Optional
 
         - task: PublishCodeCoverageResults@2
-          name: 'publish_coverage_report'
-          displayName: 'publish coverage report'
+          name: 'publish_code_coverage_report'
+          displayName: 'publish code coverage report'
           inputs:
             codeCoverageTool: 'Cobertura'
-            #/home/vsts/work/1/TestResults/unittest/6a87c1ee-f376-4d26-8d8d-701b60ceff3e/coverage.cobertura.xml
             summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'
 
 
 - stage: 'stage_deploy_production'
-  displayName: 'deploy production'
+  displayName: 'deploy'
   jobs:
   - deployment: 'deploy_schmidt_production'
     environment: 'production'
