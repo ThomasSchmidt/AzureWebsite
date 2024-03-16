@@ -80,16 +80,17 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
-            arguments: '--logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+            arguments: ' --collect:"XPlat Code Coverage"'
+            publishTestResults: true
 
-        - task: PublishTestResults@2
-          displayName: 'publish unittest results'
-          name: 'publish_unittest_results'
-          inputs:
-            testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-            testResultsFiles: '**/*.trx' 
-            searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
-            mergeTestResults: true # Optional
+        # - task: PublishTestResults@2
+        #   displayName: 'publish unittest results'
+        #   name: 'publish_unittest_results'
+        #   inputs:
+        #     testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+        #     testResultsFiles: '**/*.trx' 
+        #     searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
+        #     mergeTestResults: true # Optional
 
 
 - stage: 'stage_deploy_production'
