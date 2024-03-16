@@ -48,8 +48,8 @@ stages:
       displayName: 'publish website'
       inputs:
         command: 'publish'
-        publishWebProjects: true
-        arguments: '$(Build.Build.SourcesDirectory)/src/Website/Website.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
+        publishWebProjects: false
+        arguments: '$(Build.SourcesDirectory)/src/Website/Website.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory) -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
 
