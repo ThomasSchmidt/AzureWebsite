@@ -5,18 +5,20 @@ using AzureWebsite.Models;
 using Microsoft.Extensions.Options;
 using Website.Infrastructure;
 using Website.Models;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace AzureWebsite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IOptionsSnapshot<Settings> _settings;
+        private readonly IOptions<Settings> _settings;
 
-        public HomeController(IOptionsSnapshot<Settings> settings)
+        public HomeController(IOptions<Settings> settings)
         {
             _settings = settings;
         }
 
+		[OutputCache(Duration = 6000)]
         public IActionResult Index()
         {
             var model = new HomeViewModel
@@ -32,7 +34,6 @@ namespace AzureWebsite.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel

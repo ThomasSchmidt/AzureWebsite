@@ -15,6 +15,7 @@ namespace AzureWebsite
 			builder.Services.AddApplicationInsightsTelemetry();
 			builder.Services.AddHealthChecks();
 			builder.Services.AddControllersWithViews();
+			builder.Services.AddOutputCache();
 
 			var app = builder.Build();
 
@@ -35,6 +36,10 @@ namespace AzureWebsite
 			app.UseStaticFiles();
 
 			app.UseRouting();
+
+			app.UseOutputCache();
+
+			app.UseAuthentication();
 
 			app.UseAuthorization();
 
