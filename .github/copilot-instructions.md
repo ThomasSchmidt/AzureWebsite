@@ -4,17 +4,17 @@ This file tells AI coding agents how this repository is organized, how to build/
 
 ## Big picture
 
-- **What:** An ASP.NET Core MVC site primarily in `src/Website` with server-rendered Razor views, controllers, and simple app settings. The solution file is `AzureWebsite.sln`.
+- **What:** An ASP.NET Core MVC site primarily in `src/AzureWebsite` with server-rendered Razor views, controllers, and simple app settings. The solution file is `AzureWebsite.slnx`.
 - **Runtime:** Uses minimal `Program.cs` (WebApplication builder). Key middleware: Application Insights, HealthChecks (`/healthcheck`), Output Cache, Authentication/Authorization, Static Files, and default controller routing.
-- **Tests:** Unit tests live in `test/AzureWebsite.Tests` and use a separate test project (`Website.Tests.csproj`).
+- **Tests:** Unit tests live in `test/AzureWebsite.Tests` and use a separate test project (`AzureWebsite.Tests.csproj`).
 
 ## Key files to inspect (examples)
 
-- Startup and middleware: [src/Website/Program.cs](src/Website/Program.cs#L1-L120)
-- Example controller + caching: [src/Website/Controllers/HomeController.cs](src/Website/Controllers/HomeController.cs#L1-L120)
-- Config model: [src/Website/Infrastructure/Settings.cs](src/Website/Infrastructure/Settings.cs#L1-L200)
-- Solution README: [README.md](README.md#L1-L20)
-- Tests: [test/AzureWebsite.Tests/Website.Tests.csproj](test/AzureWebsite.Tests/Website.Tests.csproj)
+- Startup and middleware: [src/Website/Program.cs](../src/Website/Program.cs#L1-L120)
+- Example controller + caching: [src/Website/Controllers/HomeController.cs](..src/Website/Controllers/HomeController.cs#L1-L120)
+- Config model: [src/Website/Infrastructure/Settings.cs](../src/Website/Infrastructure/Settings.cs#L1-L200)
+- Solution README: [README.md](../README.md#L1-L20)
+- Tests: [test/AzureWebsite.Tests/Website.Tests.csproj](../test/AzureWebsite.Tests/Website.Tests.csproj)
 
 ## Project-specific conventions and gotchas
 
@@ -27,15 +27,15 @@ This file tells AI coding agents how this repository is organized, how to build/
 ## Build / Run / Test workflows
 
 - Build solution: `dotnet build AzureWebsite.sln`
-- Build website only: `dotnet build src/Website/Website.csproj`
-- Run locally (watch): `dotnet watch run --project src/Website/Website.csproj` or use the workspace task labeled `watch`.
-- Publish: `dotnet publish src/Website/Website.csproj -c Release -o ./out` or use the workspace `publish` task.
-- Run tests: `dotnet test test/AzureWebsite.Tests/Website.Tests.csproj` or `dotnet test AzureWebsite.sln`.
+- Build website only: `dotnet build src/AzureWebsite/AzureWebsite.csproj`
+- Run locally (watch): `dotnet watch run --project src/AzureWebsite/Website.csproj` or use the workspace task labeled `watch`.
+- Publish: `dotnet publish src/Website/AzureWebsite.csproj -c Release -o ./out` or use the workspace `publish` task.
+- Run tests: `dotnet test test/AzureWebsite.Tests/AzureWebsite.Tests.csproj` or `dotnet test AzureWebsite.slnx`.
 - Note: VS Code tasks exist for build/publish/watch (check the workspace `Tasks` panel).
 
 ## When you modify code
 
-- Update both `src/Website` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing controller logic or configuration binding.
+- Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing controller logic or configuration binding.
 - Preserve middleware ordering in `Program.cs` (StaticFiles -> Routing -> OutputCache -> Auth -> AuthZ -> Endpoints). Changes to ordering can change behavior.
 - Respect existing views under `src/Website/Views` and `Views/Shared` for layout and partials.
 
@@ -52,3 +52,54 @@ This file tells AI coding agents how this repository is organized, how to build/
 - If you change caching or telemetry, call that out in the PR description and explain runtime impact.
 
 If anything here is unclear or you want more examples (tests, common refactors, or pipeline notes), tell me which area to expand.
+
+## Additional Details
+
+### Azure App Configuration
+The project contains a commented call to `app.UseAzureAppConfiguration()` in `Program.cs`. If you enable Azure App Configuration, you must provide the connection string via an environment variable or user secret. The configuration is then merged into the existing `IConfiguration` used by the app.
+
+### Health Checks
+The health endpoint is exposed at `/healthcheck` via `app.MapHealthChecks("/healthcheck")`. It is used by Azure Monitor and CI pipelines to verify the service is running. No custom health checks are registered, so the default status is `Healthy` when the app starts.
+
+### Output Caching
+Output caching is enabled globally with `builder.Services.AddOutputCache()` and applied per controller action using the `[OutputCache(Duration = 6000)]` attribute. The `HomeController.Index` action demonstrates this. Be careful when adding dynamic content that changes frequently; you may need to adjust the duration or remove the attribute.
+
+### Testing
+Unit tests are located in `test/AzureWebsite.Tests`. They use xUnit and are filtered by the `Category` trait in the CI pipeline (`Category=unittest` or `integrationtest`). When adding new tests, annotate them with the appropriate category so they run in the correct stage.
+
+### CI/CD Pipeline
+The `ci.azure-pipelines.yml` and `cd.azure-pipelines.yml` files define the full build, test, coverage, and deployment pipeline. Key points:
+* Uses .NET 8.0 SDK.
+* Builds the solution defined by `**/*.sln` – note that the actual solution file is `AzureWebsite.slnx`.
+* Publishes the website artifact to Azure App Service `schmidt` in the `production` environment.
+* Publishes code‑coverage reports using ReportGenerator.
+
+### Solution File
+The repository uses a `.slnx` file (`AzureWebsite.slnx`) instead of the traditional `.sln`. All build tasks reference the solution via the `**/*.sln` glob, which works because the `.slnx` file is matched. If you add a new project, remember to update the `.slnx` file.
+
+### Runtime & Target Framework
+The project targets `net10.0` (a placeholder for the actual .NET 6/8 runtime). Runtime identifiers are set to `win-x64;linux-x64`, and the publish step uses `-r linux-x64` for the Azure App Service.
+
+### Telemetry
+Application Insights is configured in `Program.cs` with `builder.Services.AddApplicationInsightsTelemetry()`. The resource IDs are hard‑coded in the `.csproj`. Do not remove this registration unless you intend to replace telemetry.
+
+### Authentication & Authorization
+The middleware pipeline includes `app.UseAuthentication()` and `app.UseAuthorization()`. No authentication schemes are configured in this snippet, but the project is ready to plug in Identity or JWT providers.
+
+### Routing
+The app uses the default controller route via `endpoints.MapDefaultControllerRoute()`. Custom routes would need to be added in the `MapEndpoints` section.
+
+### Configuration Binding
+Configuration is bound to the `Settings` POCO via `IOptions<Settings>`. The `HomeController` injects `IOptions<Settings>` to access `Showthis`. Add new settings by extending the `Settings` class and updating the `appsettings*.json` files.
+
+### Namespace Conventions
+Use `AzureWebsite` as the root namespaces. When adding new files, match the surrounding namespace to avoid compile‑time issues.
+
+### Project Structure
+* `src/Website` – main application code.
+* `test/AzureWebsite.Tests` – unit tests.
+* `src/Website/appsettings*.json` – environment‑specific configuration.
+* `src/Website/Program.cs` – minimal hosting setup.
+
+### VS Code Tasks
+The workspace defines tasks for `build`, `publish`, and `watch`. These are available in the VS Code Tasks panel and can be run with `Ctrl+Shift+B` or via the command palette.

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/build/">
+    <File Path="cd.azure-pipelines.yml" />
+    <File Path="ci.azure-pipelines.yml" />
+    <File Path="version.json" />
+  </Folder>
+  <Project Path="test/AzureWebsite.Tests/AzureWebsite.Tests.csproj" />
+  <Project Path="src/AzureWebsite/AzureWebsite.csproj" />
+</Solution>

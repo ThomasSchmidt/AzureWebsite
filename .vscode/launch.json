@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/AzureWebsite/bin/Debug/netcoreapp2.2/AzureWebsite.dll",
+            "program": "${workspaceFolder}/src/AzureWebsite/bin/Debug/net10.0/AzureWebsite.dll",
             "args": [],
             "cwd": "${workspaceFolder}/AzureWebsite",
             "stopAtEntry": false,
