@@ -1,0 +1,16 @@
+{
+    "github.copilot.chat.customOAIModels": {
+        "lmstudio": {
+            "name": "LM Studio",
+            "requiresAPIKey": false,
+            "url": "http://localhost:8000/",
+            "toolCalling": true,
+            "vision": true,
+            "thinking": false,
+            "maxInputTokens": 21504,
+            "maxOutputTokens": 21504,
+        }
+    },
+    "editor.defaultFormatter": "ms-dotnettools.csdevkit",
+    "github.copilot.chat.generateTests.codeLens": true
+}
