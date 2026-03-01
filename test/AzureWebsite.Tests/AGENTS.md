@@ -24,6 +24,9 @@ This file tells AI coding agents how this repository is organized, how to build/
 - Routing: The app uses the default controller route (`MapDefaultControllerRoute`). Assume conventional MVC routes unless modifying `Program.cs` routing.
 - Telemetry/CI: Application Insights is registered in startup; do not remove telemetry registration without reason.
 
+## feature specification files
+- All features most be put in folder `features` and named with an increasing number as first part of filename in the following format `1-feature-name.md` and these spec files contain a description of the feature.
+
 ## Build / Run / Test workflows
 
 - Build solution: `dotnet build AzureWebsite.slnx`
