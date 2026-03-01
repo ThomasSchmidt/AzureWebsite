@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace AzureWebsite;
 
-public class Settings
+public class WebsiteSettings
 {
-    public string Showthis { get; set; }
+    public string ShowThis { get; set; }
 }

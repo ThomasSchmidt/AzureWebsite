@@ -10,26 +10,26 @@ This file tells AI coding agents how this repository is organized, how to build/
 
 ## Key files to inspect (examples)
 
-- Startup and middleware: [src/Website/Program.cs](../src/Website/Program.cs#L1-L120)
-- Example controller + caching: [src/Website/Controllers/HomeController.cs](..src/Website/Controllers/HomeController.cs#L1-L120)
-- Config model: [src/Website/Infrastructure/Settings.cs](../src/Website/Infrastructure/Settings.cs#L1-L200)
-- Solution README: [README.md](../README.md#L1-L20)
-- Tests: [test/AzureWebsite.Tests/Website.Tests.csproj](../test/AzureWebsite.Tests/Website.Tests.csproj)
+- Startup and middleware: [`src/AzureWebsite/Program.cs`](src/AzureWebsite/Program.cs)
+- Example controller + caching: [`src/AzureWebsite/Controllers/HomeController.cs`](src/AzureWebsite/Controllers/HomeController.cs)
+- Config model: [`src/AzureWebsite/Infrastructure/WebsiteSettings.cs`](src/AzureWebsite/Infrastructure/WebsiteSettings.cs)
+- Solution README: [`README.md`](README.md)
+- Tests: [`test/AzureWebsite.Tests/AzureWebsite.Tests.csproj`](test/AzureWebsite.Tests/AzureWebsite.Tests.csproj)
 
 ## Project-specific conventions and gotchas
 
 - Namespace inconsistencies: files use both `AzureWebsite` and `Website` namespaces. Match the surrounding files' namespace when adding new files to avoid compile-time surprises.
-- Configuration: environment-specific files live in `src/Website` as `appsettings*.json`. Prefer reading configuration via bound POCOs (see `Settings` and `IOptions<Settings>` usage in controllers).
+- Configuration: environment-specific files live in `src/AzureWebsite` as `appsettings*.json`. Prefer reading configuration via bound POCOs (see `WebsiteSettings` and `IOptions<WebsiteSettings>` usage in controllers).
 - Caching: Output caching is enabled globally and used via attribute `[OutputCache(Duration = 6000)]` on controllers. Be mindful when changing dynamic content.
 - Routing: The app uses the default controller route (`MapDefaultControllerRoute`). Assume conventional MVC routes unless modifying `Program.cs` routing.
 - Telemetry/CI: Application Insights is registered in startup; do not remove telemetry registration without reason.
 
 ## Build / Run / Test workflows
 
-- Build solution: `dotnet build AzureWebsite.sln`
+- Build solution: `dotnet build AzureWebsite.slnx`
 - Build website only: `dotnet build src/AzureWebsite/AzureWebsite.csproj`
-- Run locally (watch): `dotnet watch run --project src/AzureWebsite/Website.csproj` or use the workspace task labeled `watch`.
-- Publish: `dotnet publish src/Website/AzureWebsite.csproj -c Release -o ./out` or use the workspace `publish` task.
+- Run locally (watch): `dotnet watch run --project src/AzureWebsite/AzureWebsite.csproj` or use the workspace task labeled `watch`.
+- Publish: `dotnet publish src/AzureWebsite/AzureWebsite.csproj -c Release -o ./out` or use the workspace `publish` task.
 - Run tests: `dotnet test test/AzureWebsite.Tests/AzureWebsite.Tests.csproj` or `dotnet test AzureWebsite.slnx`.
 - Note: VS Code tasks exist for build/publish/watch (check the workspace `Tasks` panel).
 
@@ -37,7 +37,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 
 - Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing controller logic or configuration binding.
 - Preserve middleware ordering in `Program.cs` (StaticFiles -> Routing -> OutputCache -> Auth -> AuthZ -> Endpoints). Changes to ordering can change behavior.
-- Respect existing views under `src/Website/Views` and `Views/Shared` for layout and partials.
+- Respect existing views under `src/AzureWebsite/Views` and `Views/Shared` for layout and partials.
 
 ## Integration points / external dependencies
 
@@ -90,16 +90,16 @@ The middleware pipeline includes `app.UseAuthentication()` and `app.UseAuthoriza
 The app uses the default controller route via `endpoints.MapDefaultControllerRoute()`. Custom routes would need to be added in the `MapEndpoints` section.
 
 ### Configuration Binding
-Configuration is bound to the `Settings` POCO via `IOptions<Settings>`. The `HomeController` injects `IOptions<Settings>` to access `Showthis`. Add new settings by extending the `Settings` class and updating the `appsettings*.json` files.
+Configuration is bound to the `WebsiteSettings` POCO via `IOptions<WebsiteSettings>`. The `HomeController` injects `IOptions<WebsiteSettings>` to access settings. Add new settings by extending the `WebsiteSettings` class and updating the `appsettings*.json` files.
 
 ### Namespace Conventions
 Use `AzureWebsite` as the root namespaces. When adding new files, match the surrounding namespace to avoid compile‑time issues.
 
 ### Project Structure
-* `src/Website` – main application code.
+* `src/AzureWebsite` – main application code.
 * `test/AzureWebsite.Tests` – unit tests.
-* `src/Website/appsettings*.json` – environment‑specific configuration.
-* `src/Website/Program.cs` – minimal hosting setup.
+* `src/AzureWebsite/appsettings*.json` – environment‑specific configuration.
+* `src/AzureWebsite/Program.cs` – minimal hosting setup.
 
 ### VS Code Tasks
 The workspace defines tasks for `build`, `publish`, and `watch`. These are available in the VS Code Tasks panel and can be run with `Ctrl+Shift+B` or via the command palette.

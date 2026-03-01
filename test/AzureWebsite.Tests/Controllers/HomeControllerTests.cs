@@ -49,16 +49,16 @@ public class HomeControllerTests
         Assert.NotNull(model.RequestId);
     }
 
-    private IOptions<Settings> GetSettings()
+    private IOptions<WebsiteSettings> GetSettings()
     {
         return new OptionsSettings();
     }
 
-    public class OptionsSettings : IOptionsSnapshot<Settings>
+    public class OptionsSettings : IOptionsSnapshot<WebsiteSettings>
     {
-        public Settings Value => new Settings();
+        public WebsiteSettings Value => new WebsiteSettings();
 
-        public Settings Get(string name)
+        public WebsiteSettings Get(string name)
         {
             throw new System.NotImplementedException();
         }

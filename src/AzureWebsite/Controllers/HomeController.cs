@@ -10,9 +10,9 @@ namespace AzureWebsite.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly IOptions<Settings> _settings;
+    private readonly IOptions<WebsiteSettings> _settings;
 
-    public HomeController(IOptions<Settings> settings)
+    public HomeController(IOptions<WebsiteSettings> settings)
     {
         _settings = settings;
     }
@@ -22,7 +22,7 @@ public class HomeController : Controller
     {
         var model = new HomeViewModel
         {
-            ShowThis = _settings.Value.Showthis,
+            ShowThis = _settings.Value.ShowThis,
         };
 
         return View(model);
