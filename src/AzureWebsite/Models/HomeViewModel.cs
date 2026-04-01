@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Website.Models
+namespace AzureWebsite.Models
 {
     public class HomeViewModel
     {

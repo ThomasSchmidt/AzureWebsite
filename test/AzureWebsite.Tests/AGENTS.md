@@ -16,15 +16,15 @@ This file tells AI coding agents how this repository is organized, how to build/
 - Solution README: [`README.md`](README.md)
 - Tests: [`test/AzureWebsite.Tests/AzureWebsite.Tests.csproj`](test/AzureWebsite.Tests/AzureWebsite.Tests.csproj)
 
-## Project-specific conventions and gotchas
+## Project-specific conventions
 
-- Namespace inconsistencies: files use both `AzureWebsite` and `Website` namespaces. Match the surrounding files' namespace when adding new files to avoid compile-time surprises.
+- Namespace : files use `AzureWebsite` namespaces. Match the surrounding files' namespace when adding new files to avoid compile-time surprises.
 - Configuration: environment-specific files live in `src/AzureWebsite` as `appsettings*.json`. Prefer reading configuration via bound POCOs (see `WebsiteSettings` and `IOptions<WebsiteSettings>` usage in controllers).
 - Caching: Output caching is enabled globally and used via attribute `[OutputCache(Duration = 6000)]` on controllers. Be mindful when changing dynamic content.
 - Routing: The app uses the default controller route (`MapDefaultControllerRoute`). Assume conventional MVC routes unless modifying `Program.cs` routing.
 - Telemetry/CI: Application Insights is registered in startup; do not remove telemetry registration without reason.
 
-## feature specification files
+## feature planning specification files
 - All features most be put in folder `features` and named with an increasing number as first part of filename in the following format `1-feature-name.md` and these spec files contain a description of the feature.
 
 ## Build / Run / Test workflows

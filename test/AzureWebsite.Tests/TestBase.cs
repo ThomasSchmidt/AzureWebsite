@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace Website.Tests
+namespace AzureWebsite.Tests
 {
     public class TestBase
     {

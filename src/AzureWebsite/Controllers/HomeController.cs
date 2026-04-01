@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using AzureWebsite.Models;
 using Microsoft.Extensions.Options;
-using Website.Models;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace AzureWebsite.Controllers;

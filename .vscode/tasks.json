@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/AzureWebsite/AzureWebsite.csproj",
+                "${workspaceFolder}/src/AzureWebsite/AzureWebsite.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/AzureWebsite/AzureWebsite.csproj",
+                "${workspaceFolder}/src/AzureWebsite/AzureWebsite.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/AzureWebsite/AzureWebsite.csproj",
+                "${workspaceFolder}/src/AzureWebsite/AzureWebsite.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

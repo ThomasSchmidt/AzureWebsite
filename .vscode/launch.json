@@ -12,7 +12,7 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/AzureWebsite/bin/Debug/net10.0/AzureWebsite.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/AzureWebsite",
+            "cwd": "${workspaceFolder}/src/AzureWebsite",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
