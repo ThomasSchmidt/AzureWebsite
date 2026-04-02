@@ -15,7 +15,7 @@ pool:
   vmImage: 'ubuntu-20.04'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/*.slnx'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   webArtifactName: 'website'
@@ -29,10 +29,10 @@ stages:
   - job: 'build'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net 8.0 sdk'
+      displayName: 'Use .net 10.0 sdk'
       name: 'use_sdk'
       inputs:
-          version: '8.0.x'
+          version: '10.0.x'
           packageType: 'sdk'
           includePreviewVersions: true
 
@@ -49,7 +49,7 @@ stages:
       inputs:
         command: 'publish'
         publishWebProjects: false
-        arguments: '$(Build.SourcesDirectory)/src/Website/Website.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish/website -r linux-x64'
+        arguments: '$(Build.SourcesDirectory)/src/AzureWebsite/AzureWebsite.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish/website -r linux-x64'
         zipAfterPublish: true
         modifyOutputPath: false
 
@@ -68,10 +68,10 @@ stages:
     - job: 'test'
       steps:
         - task: UseDotNet@2
-          displayName: 'Use .net 8.0 sdk'
+          displayName: 'Use .net 10.0 sdk'
           name: 'use_sdk'
           inputs:
-            version: '8.0.x'
+            version: '10.0.x'
             packageType: 'sdk'
             includePreviewVersions: true
 
@@ -119,7 +119,7 @@ stages:
               inputs:
                 buildType: 'current'
                 artifactName: '$(webArtifactName)'
-                targetPath: '$(Pipeline.Workspace)/publish/Website'
+                targetPath: '$(Pipeline.Workspace)/publish/website'
 
             - task: AzureRmWebAppDeployment@4
               displayName: 'schmidt app service deploy'
@@ -128,5 +128,5 @@ stages:
                 azureSubscription: 'Pay-As-You-Go (4ef5cf54-1584-409a-aff2-01c917c56340)'
                 appType: 'webAppLinux'
                 WebAppName: '$(WebAppName)'
-                packageForLinux: '$(Pipeline.Workspace)/publish/Website/*.zip'
-                RuntimeStack: 'DOTNETCORE|8.0'
+                packageForLinux: '$(Pipeline.Workspace)/publish/website/*.zip'
+                RuntimeStack: 'DOTNETCORE|10.0'

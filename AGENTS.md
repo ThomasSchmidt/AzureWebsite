@@ -5,7 +5,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 ## Big picture
 
 - **What:** An ASP.NET Core MVC site primarily in `src/AzureWebsite` with server-rendered Razor views, controllers, and simple app settings. The solution file is `AzureWebsite.slnx`.
-- **Runtime:** Uses minimal `Program.cs` (WebApplication builder). Key middleware: Application Insights, HealthChecks (`/healthcheck`), Output Cache, Authentication/Authorization, Static Files, and default controller routing.
+- **Runtime:** Uses minimal `Program.cs` (WebApplication builder). Key middleware order: StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks (`/healthcheck`) → Endpoints. Application Insights is registered as a service (not middleware).
 - **Tests:** Unit tests live in `test/AzureWebsite.Tests` and use a separate test project (`AzureWebsite.Tests.csproj`).
 
 ## Key files to inspect (examples)
@@ -25,7 +25,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 - Telemetry/CI: Application Insights is registered in startup; do not remove telemetry registration without reason.
 
 ## feature planning specification files
-- All features most be put in folder `features` and named with an increasing number as first part of filename in the following format `1-feature-name.md` and these spec files contain a description of the feature.
+- All features must be put in folder `./docs/plans` and named with an increasing number as first part of filename in the following format `1-feature-name.md` and these spec files contain a description of the feature.
 
 ## Build / Run / Test workflows
 
@@ -39,7 +39,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 ## When you modify code
 
 - Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing controller logic or configuration binding.
-- Preserve middleware ordering in `Program.cs` (StaticFiles -> Routing -> OutputCache -> Auth -> AuthZ -> Endpoints). Changes to ordering can change behavior.
+- Preserve middleware ordering in `Program.cs` (StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks → Endpoints). Changes to ordering can change behavior.
 - Respect existing views under `src/AzureWebsite/Views` and `Views/Shared` for layout and partials.
 
 ## Integration points / external dependencies
@@ -72,16 +72,16 @@ Unit tests are located in `test/AzureWebsite.Tests`. They use xUnit and are filt
 
 ### CI/CD Pipeline
 The `ci.azure-pipelines.yml` and `cd.azure-pipelines.yml` files define the full build, test, coverage, and deployment pipeline. Key points:
-* Uses .NET 8.0 SDK.
-* Builds the solution defined by `**/*.sln` – note that the actual solution file is `AzureWebsite.slnx`.
+* Uses .NET 10.0 SDK.
+* Builds the solution defined by `**/*.slnx` – note that the actual solution file is `AzureWebsite.slnx`.
 * Publishes the website artifact to Azure App Service `schmidt` in the `production` environment.
 * Publishes code‑coverage reports using ReportGenerator.
 
 ### Solution File
-The repository uses a `.slnx` file (`AzureWebsite.slnx`) instead of the traditional `.sln`. All build tasks reference the solution via the `**/*.sln` glob, which works because the `.slnx` file is matched. If you add a new project, remember to update the `.slnx` file.
+The repository uses a `.slnx` file (`AzureWebsite.slnx`) instead of the traditional `.sln`. All build tasks reference the solution via the `**/*.slnx` glob, which works because the `.slnx` file is matched. If you add a new project, remember to update the `.slnx` file.
 
 ### Runtime & Target Framework
-The project targets `net10.0` (a placeholder for the actual .NET 6/8 runtime). Runtime identifiers are set to `win-x64;linux-x64`, and the publish step uses `-r linux-x64` for the Azure App Service.
+The project targets `net10.0` (aka .net 10). Runtime identifiers are set to `win-x64;linux-x64`, and the publish step uses `-r linux-x64` for the Azure App Service.
 
 ### Telemetry
 Application Insights is configured in `Program.cs` with `builder.Services.AddApplicationInsightsTelemetry()`. The resource IDs are hard‑coded in the `.csproj`. Do not remove this registration unless you intend to replace telemetry.
