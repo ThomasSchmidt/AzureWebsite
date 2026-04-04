@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace AzureWebsite;
 
@@ -20,6 +21,13 @@ public class Program
         builder.Services.AddControllersWithViews();
         
         builder.Services.AddOutputCache();
+
+        builder.Services.AddHsts(options =>
+        {
+            options.MaxAge = TimeSpan.FromDays(365);
+            options.IncludeSubDomains = true;
+            options.Preload = true;
+        });
 
         var app = builder.Build();
 

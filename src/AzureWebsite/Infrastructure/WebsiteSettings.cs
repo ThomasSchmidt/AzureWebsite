@@ -8,5 +8,5 @@ namespace AzureWebsite;
 
 public class WebsiteSettings
 {
-    public string ShowThis { get; set; }
+    // ShowThis property removed - was only used to populate HomeViewModel.ShowThis which is unused
 }

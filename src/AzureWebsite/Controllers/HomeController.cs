@@ -19,11 +19,7 @@ public class HomeController : Controller
 	[OutputCache(Duration = 6000)]
     public IActionResult Index()
     {
-        var model = new HomeViewModel
-        {
-            ShowThis = _settings.Value.ShowThis,
-        };
-
+        var model = new HomeViewModel();
         return View(model);
     }
 

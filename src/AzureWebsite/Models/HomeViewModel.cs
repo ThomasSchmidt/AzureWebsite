@@ -7,6 +7,6 @@ namespace AzureWebsite.Models
 {
     public class HomeViewModel
     {
-        public string ShowThis { get; set; }
+        // ShowThis property removed - was assigned in controller but never used/displayed in views
     }
 }
