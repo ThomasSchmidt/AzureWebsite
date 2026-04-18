@@ -12,13 +12,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddMvc();
+        builder.Services.AddRazorPages();
 
-        builder.Services.AddApplicationInsightsTelemetry();
-        
         builder.Services.AddHealthChecks();
-        
-        builder.Services.AddControllersWithViews();
         
         builder.Services.AddOutputCache();
 
@@ -37,7 +33,7 @@ public class Program
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
             // app.UseHttpsRedirection();
@@ -55,10 +51,7 @@ public class Program
 
         app.MapHealthChecks("/healthcheck");
 
-        app.UseEndpoints(endpoints =>
-        {
-            _ = endpoints.MapDefaultControllerRoute();
-        });
+        app.MapRazorPages();
 
         app.Run();
     }

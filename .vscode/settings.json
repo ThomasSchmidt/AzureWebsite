@@ -1,7 +1,7 @@
 {
     "github.copilot.chat.customOAIModels": {
         "lmstudio": {
-            "name": "LM Studio",
+            "name": "LM Studio - local",
             "requiresAPIKey": false,
             "url": "http://localhost:8000/",
             "toolCalling": true,
