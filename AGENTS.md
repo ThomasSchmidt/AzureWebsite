@@ -4,30 +4,31 @@ This file tells AI coding agents how this repository is organized, how to build/
 
 ## Big picture
 
-- **What:** An ASP.NET Core MVC site running on `net10` primarily in `src/AzureWebsite` with server-rendered Razor views, controllers, and simple app settings. The solution file is `AzureWebsite.slnx`.
-- **Runtime:** Uses minimal `Program.cs` (WebApplication builder). Key middleware order: StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks (`/healthcheck`) → Endpoints. Application Insights is registered as a service (not middleware).
+- **What:** An ASP.NET Core Razor Pages site running on `net10` in `src/AzureWebsite`. The solution file is `AzureWebsite.slnx`.
+- **Runtime:** Uses minimal `Program.cs` (WebApplication builder). Key middleware order: StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks (`/healthcheck`) → RazorPages. HSTS is configured with 365-day preload; HTTPS redirection is commented out. No Application Insights or Azure App Configuration integration currently active.
 - **Tests:** Unit tests live in `test/AzureWebsite.Tests` and use a separate test project (`AzureWebsite.Tests.csproj`).
 
 ## Key files to inspect (examples)
 
-- Startup and middleware: [`src/AzureWebsite/Program.cs`](src/AzureWebsite/Program.cs)
-- Example controller + caching: [`src/AzureWebsite/Controllers/HomeController.cs`](src/AzureWebsite/Controllers/HomeController.cs)
-- Config model: [`src/AzureWebsite/Infrastructure/WebsiteSettings.cs`](src/AzureWebsite/Infrastructure/WebsiteSettings.cs)
-- Solution README: [`README.md`](README.md)
-- Tests: [`test/AzureWebsite.Tests/AzureWebsite.Tests.csproj`](test/AzureWebsite.Tests/AzureWebsite.Tests.csproj)
+- Startup and middleware: `src/AzureWebsite/Program.cs`
+- Razor pages: `src/AzureWebsite/Pages/Index.cshtml`, `src/AzureWebsite/Pages/Error.cshtml`
+- Page models: `src/AzureWebsite/Pages/Index.cshtml.cs`, `src/AzureWebsite/Pages/Error.cshtml.cs`
+- Config model: `src/AzureWebsite/Infrastructure/WebsiteSettings.cs`
+- Solution README: `README.md`
+- Tests: `test/AzureWebsite.Tests/AzureWebsite.Tests.csproj`
 
 ## Project-specific conventions
 
 - Namespace: files use `AzureWebsite` namespaces. Match the surrounding files' namespace when adding new files to avoid compile-time surprises.
-- Configuration: environment-specific files live in `src/AzureWebsite` as `appsettings*.json`. Prefer reading configuration via bound POCOs (see `WebsiteSettings` and `IOptions<WebsiteSettings>` usage in controllers).
-- Caching: Output caching is enabled globally and used via attribute `[OutputCache(Duration = 6000)]` on controllers. Be mindful when changing dynamic content.
-- Routing: The app uses the default controller route (`MapDefaultControllerRoute`). Assume conventional MVC routes unless modifying `Program.cs` routing.
-- Telemetry/CI: Application Insights is registered in startup; do not remove telemetry registration without reason.
+- Configuration: environment-specific files live in `src/AzureWebsite` as `appsettings*.json`. Prefer reading configuration via bound POCOs (see `WebsiteSettings` and `IOptions<WebsiteSettings>` usage).
+- Caching: Output caching is enabled globally (`UseOutputCache()`). Be mindful when changing dynamic content.
+- Routing: The app uses Razor Pages routing (`MapRazorPages()`). There are no controllers — this is a pure Razor Pages application, not MVC.
+- Security: HSTS is configured with 365-day max age and preload enabled; HTTPS redirection is commented out in production branch.
 
 ## Feature Planning Specification Files
 
-- All features must be documented in the `./plans/<plan-name>` directory (create this folder if it doesn't exist)
-- Filename format: `<number>-<feature-name>.md` (e.g., `1-add-user-authentication.md`)
+- All features must be documented in the `plans/<plan-name>/plan.md` directory (create this folder if it doesn't exist)
+- Filename format: `<plan-id>-<feature-name>.md` (e.g., `1-add-user-authentication.md`), always ask the user for plan-id
 - Each spec file should contain a clear description of the feature, implementation approach, and any relevant diagrams or examples
 
 ## Build / Run / Test workflows
@@ -36,26 +37,26 @@ This file tells AI coding agents how this repository is organized, how to build/
 - Build website only: `dotnet build src/AzureWebsite/AzureWebsite.csproj`
 - Run locally (watch): `dotnet watch run --project src/AzureWebsite/AzureWebsite.csproj` or use the workspace task labeled `watch`.
 - Publish: `dotnet publish src/AzureWebsite/AzureWebsite.csproj -c Release -o ./out` or use the workspace `publish` task.
-- Run tests: `dotnet test test/AzureWebsite.Tests/AzureWebsite.Tests.csproj` or `dotnet test AzureWebsite.slnx`.
+- Run all tests: `dotnet test`.
+- Run all tests and collect code coverage with `dotnet test --collect:"XPlat Code Coverage"` 
+- To test a specific C# file use `dotnet test --filter "FullyQualifiedName=<full-namespace-to-class>"` where <full-namespace-to-class> is the fully qualified name for the class to test
 - Note: VS Code tasks exist for build/publish/watch (check the workspace `Tasks` panel).
 
 ## When you modify code
 
-- Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing controller logic or configuration binding.
-- Preserve middleware ordering in `Program.cs` (StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks → Endpoints). Changes to ordering can change behavior.
-- Respect existing views under `src/AzureWebsite/Views` and `Views/Shared` for layout and partials.
+- Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing logic or configuration binding.
+- Preserve middleware ordering in `Program.cs` (StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks → RazorPages). Changes to ordering can change behavior.
+- Respect existing views under `src/AzureWebsite/Pages/Shared` for layout and partials.
 
 ## Integration points / external dependencies
 
-- Application Insights (configured in `Program.cs`).
-- Health checks at `/healthcheck` — keep this endpoint stable for monitoring.
-- There is a commented `app.UseAzureAppConfiguration()` call — if enabling Azure App Configuration, ensure secrets/keys are provided in pipeline or local dev settings.
+- Health checks at `/healthcheck` — currently configured with no providers (`AddHealthChecks()` + `MapHealthChecks("/healthcheck")`). Keep this endpoint stable for monitoring; add diagnostics as needed.
+- No Application Insights or Azure App Configuration integration is currently active in the codebase.
 
 ## Helpful heuristics for PRs
 
-- Small, focused PRs: change one controller/view/service at a time and include tests for behavior changes.
+- Small, focused PRs: change one page/service at a time and include tests for behavior changes.
 - Match namespaces and project references; build locally with `dotnet build` before pushing.
-- If you change caching or telemetry, call that out in the PR description and explain runtime impact.
 
 If anything here is unclear or you want more examples (tests, common refactors, or pipeline notes), tell me which area to expand.
 
@@ -95,20 +96,12 @@ The repository uses a `.slnx` file (`AzureWebsite.slnx`) instead of the traditio
 - **Runtime Identifiers**: `win-x64;linux-x64`
 - **Publish Command**: Uses `-r linux-x64` for Azure App Service deployment
 
-### Authentication & Authorization Setup
-The middleware pipeline includes `app.UseAuthentication()` and `app.UseAuthorization()`. No authentication schemes are currently configured, but the project is ready to integrate:
-- ASP.NET Core Identity
-- JWT Bearer tokens
-- Azure AD authentication
-
-Custom routes would need to be added in the `MapEndpoints` section of `Program.cs`.
-
 ### Configuration Binding Pattern
 Configuration is bound to the `WebsiteSettings` POCO via `IOptions<WebsiteSettings>`:
 ```csharp
 private readonly IOptions<WebsiteSettings> _settings;
 
-public HomeController(IOptions<WebsiteSettings> settings)
+public IndexModel(IOptions<WebsiteSettings> settings)
 {
     _settings = settings;
 }
@@ -116,9 +109,10 @@ public HomeController(IOptions<WebsiteSettings> settings)
 To add new settings: extend the `WebsiteSettings` class and update the appropriate `appsettings*.json` files.
 
 ### Project Structure Overview
-- **`src/AzureWebsite`** – Main application code (controllers, views, services)
+- **`src/AzureWebsite/Pages`** – Razor pages (.cshtml, .cshtml.cs) with shared layout under `Pages/Shared`
+- **`src/AzureWebsite/Infrastructure`** – Configuration models (e.g., `WebsiteSettings`)
 - **`test/AzureWebsite.Tests`** – Unit tests using xUnit
-- **`src/AzureWebsite/appsettings*.json`** – Environment-specific configuration
+- **`src/AzureWebsite/appsettings*.json`** – Environment-specific configuration (`appsettings.json`, `appsettings.Development.json`, `appsettings.Production.json`)
 - **`src/AzureWebsite/Program.cs`** – Minimal hosting setup and middleware pipeline
 
 ### VS Code Tasks Reference
