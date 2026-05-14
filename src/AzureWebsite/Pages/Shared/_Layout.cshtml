@@ -7,27 +7,23 @@
     <link rel="stylesheet" asp-href-include="~/css/*.*" asp-append-version="true" />
 </head>
 <body>
-    <header>
+    <header class="header">
         <nav>
-            <div>
-                <div>
-                    <ul>
-                        <li>
-                            <a asp-page="Index">Home</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <ul>
+                <li>
+                    <a asp-page="Index" class="text-light Swimming-Back-1-hex">Home</a>
+                </li>
+            </ul>
         </nav>
     </header>
     <div class="container">
-        <main role="main">
+        <main role="main" class="text-dark">
             @RenderBody()
         </main>
     </div>
 
-    <footer>
-        <div class="container">
+    <footer class="footer">
+        <div>
             &copy; @DateTime.Now.Year - Powered by @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription
         </div>
     </footer>

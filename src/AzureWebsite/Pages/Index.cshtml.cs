@@ -7,11 +7,8 @@ namespace AzureWebsite.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly IOptions<WebsiteSettings> _settings;
-
-    public IndexModel(IOptions<WebsiteSettings> settings)
+    public IndexModel()
     {
-        _settings = settings;
     }
 
     [OutputCache(Duration = 6000)]
