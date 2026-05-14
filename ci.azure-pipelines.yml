@@ -8,7 +8,7 @@ pool:
   # vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/*.slnx'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   webArtifactName: 'azure-website'
@@ -22,10 +22,10 @@ stages:
   - job: 'test'
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .net 8.0 sdk'
+      displayName: 'Use .net 10.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '8.0.x'
+        version: '10.0.x'
         packageType: 'sdk'
         includePreviewVersions: true
 
@@ -68,10 +68,10 @@ stages:
     steps:
 
     - task: UseDotNet@2
-      displayName: 'Use .net 8.0 sdk'
+      displayName: 'Use .net 10.0 sdk'
       name: 'use_sdk'
       inputs:
-        version: '8.0.x'
+        version: '10.0.x'
         packageType: 'sdk'
         includePreviewVersions: true
 
