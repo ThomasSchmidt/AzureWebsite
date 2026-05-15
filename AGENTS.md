@@ -27,8 +27,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 
 ## Feature Planning Specification Files
 
-- All features must be documented in the `plans/<plan-name>/plan.md` directory (create this folder if it doesn't exist)
-- Filename format: `<plan-id>-<feature-name>.md` (e.g., `1-add-user-authentication.md`), always ask the user for plan-id
+- All features must be documented in the `plans/<plan-date>-<plan-name>.md` directory where `<plan-date>` is YYYY-MM-DD format (create this folder if it doesn't exist).
 - Each spec file should contain a clear description of the feature, implementation approach, and any relevant diagrams or examples
 
 ## Build / Run / Test workflows
