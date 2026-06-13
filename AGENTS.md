@@ -107,6 +107,10 @@ public IndexModel(IOptions<WebsiteSettings> settings)
 ```
 To add new settings: extend the `WebsiteSettings` class and update the appropriate `appsettings*.json` files.
 
+### C# conventions
+- Use C# version 14
+- Use modern C# with pattern matching, eg. use `SomeThing is null` instead of `SomeThing == null`
+
 ### Project Structure Overview
 - **`src/AzureWebsite/Pages`** – Razor pages (.cshtml, .cshtml.cs) with shared layout under `Pages/Shared`
 - **`src/AzureWebsite/Infrastructure`** – Configuration models (e.g., `WebsiteSettings`)

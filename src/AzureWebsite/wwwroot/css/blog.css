@@ -1,0 +1,8 @@
+/* Basic blog styles */
+.blog-listing { padding: 1rem 0; }
+.blog-post-card { border-bottom: 1px solid #eee; padding: 1rem 0; }
+.blog-post-card h2 { margin: 0.25rem 0; }
+.blog-summary { color: #444; }
+.blog-category { background:#eef; padding:0.2rem 0.4rem; border-radius:4px; margin-right:0.5rem; }
+.post-content { margin-top:1rem; line-height:1.6; }
+.post-navigation { display:flex; justify-content:space-between; gap:1rem; margin-top:2rem; }

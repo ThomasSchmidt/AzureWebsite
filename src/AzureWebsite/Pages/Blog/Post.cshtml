@@ -1,0 +1,65 @@
+@page
+@model AzureWebsite.Pages.Blog.BlogModel
+@{
+    ViewData["Title"] = Model.Post?.Title ?? "Blog Post";
+}
+
+@if (Model.Post == null)
+{
+    <div class="blog-post not-found">
+        <h1>Post Not Found</h1>
+        <p>The blog post you're looking for doesn't exist or has been removed.</p>
+        <a asp-page="Index">← Back to Blog</a>
+    </div>
+}
+else
+{
+    <article class="blog-post">
+        <header class="post-header">
+            <h1>@Model.Post.Title</h1>
+            <div class="post-meta">
+                <time datetime="@Model.Post.PublishedAt.ToString("yyyy-MM-dd")">@Model.Post.PublishedAt.ToString("MMMM d, yyyy")</time>
+                <span>·</span>
+                <span>By @Model.Post.Author</span>
+                <span>·</span>
+                <span>@Model.Post.ReadingTimeMinutes min read</span>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Post.Category))
+            {
+                <span class="blog-category">@Model.Post.Category</span>
+            }
+            @if (Model.Post.Tags.Any())
+            {
+                <div class="post-tags">
+                    @foreach (var tag in Model.Post.Tags)
+                    {
+                        <span class="tag">#@tag</span>
+                    }
+                </div>
+            }
+        </header>
+
+        <div class="post-content">
+            @Html.Raw(Model.Post.ContentHtml)
+        </div>
+
+        @if (Model.PreviousPost != null || Model.NextPost != null)
+        {
+            <nav class="post-navigation">
+                @if (Model.PreviousPost != null)
+                {
+                    <a asp-page="Post" asp-route-slug="@Model.PreviousPost.Slug" class="prev-post">
+                        ← @Model.PreviousPost.Title
+                    </a>
+                }
+                <a asp-page="Index" class="back-to-blog">← Back to Blog</a>
+                @if (Model.NextPost != null)
+                {
+                    <a asp-page="Post" asp-route-slug="@Model.NextPost.Slug" class="next-post">
+                        @Model.NextPost.Title →
+                    </a>
+                }
+            </nav>
+        }
+    </article>
+}

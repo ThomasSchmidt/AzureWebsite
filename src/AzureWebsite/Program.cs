@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using AzureWebsite.Services;
 
 namespace AzureWebsite;
 
@@ -21,6 +22,14 @@ public class Program
             });
 
         builder.Services.AddRazorPages();
+
+        // Blog support
+        builder.Services.AddMemoryCache();
+        builder.Services.Configure<BlogSettings>(builder.Configuration.GetSection("Blog"));
+        builder.Services.AddSingleton<IBlogService, BlogService>();
+
+        builder.Services.Configure<BlogSettings>(builder.Configuration.GetSection("Blog"));
+        builder.Services.AddSingleton<IBlogService, BlogService>();
 
         builder.Services.AddHealthChecks();
         

@@ -1,0 +1,61 @@
+@page
+@model AzureWebsite.Pages.Blog.BlogListingModel
+@{
+    ViewData["Title"] = "Blog";
+}
+
+<div class="blog-listing">
+    <h1>@ViewData["Title"]</h1>
+
+    @if (Model.Categories.Any())
+    {
+        <div class="blog-filters">
+            <span>Filter by category:</span>
+            <a asp-page="Index" class="filter-link @(Model.SelectedCategory == null ? "active" : "")">All</a>
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-page="Index" asp-route-category="@category" class="filter-link @(Model.SelectedCategory == category ? "active" : "")">@category</a>
+            }
+        </div>
+    }
+
+    @if (!Model.Posts.Any())
+    {
+        <p class="no-posts">No blog posts found.</p>
+    }
+    else
+    {
+        <div class="blog-posts">
+            @foreach (var post in Model.Posts)
+            {
+                <article class="blog-post-card">
+                    <time datetime="@post.PublishedAt.ToString("yyyy-MM-dd")">@post.PublishedAt.ToString("MMMM d, yyyy")</time>
+                    <h2><a asp-page="Post" asp-route-slug="@post.Slug">@post.Title</a></h2>
+                    @if (!string.IsNullOrEmpty(post.Category))
+                    {
+                        <span class="blog-category">@post.Category</span>
+                    }
+                    @if (post.Tags.Any())
+                    {
+                        <div class="blog-tags">
+                            @foreach (var tag in post.Tags)
+                            {
+                                <span class="tag">#@tag</span>
+                            }
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(post.Summary))
+                    {
+                        <p class="blog-summary">@post.Summary</p>
+                    }
+                    <div class="blog-meta">
+                        <span>By @post.Author</span>
+                        <span>·</span>
+                        <span>@post.ReadingTimeMinutes min read</span>
+                    </div>
+                    <a asp-page="Post" asp-route-slug="@post.Slug" class="read-more">Read more →</a>
+                </article>
+            }
+        </div>
+    }
+</div>
