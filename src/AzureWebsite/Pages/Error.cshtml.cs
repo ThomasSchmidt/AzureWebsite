@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AzureWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,13 +8,19 @@ namespace AzureWebsite.Pages;
 
 public class ErrorPageModel : PageModel
 {
-    [BindProperty(SupportsGet = true)]
     public ErrorViewModel? ErrorInfo { get; set; }
 
     public void OnGet()
     {
-        // The error info is passed via the exception handling middleware
-        // which sets the IActionContext's ModelState to have an error.
-        // We can also read from HttpContext.Items or use a query string.
+        // Read exception details from HttpContext.Items set by IExceptionHandler middleware
+        var exceptionFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        if (exceptionFeature?.Error != null)
+        {
+            // Generate a request ID for tracking
+            ErrorInfo = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+        }
     }
 }
