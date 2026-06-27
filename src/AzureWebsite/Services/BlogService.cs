@@ -90,7 +90,7 @@ public class BlogService : IBlogService
 
     public async Task<IEnumerable<BlogPost>> GetAllPostsAsync()
     {
-        return await _cache.GetOrCreateAsync(_cacheKeyPosts, async entry =>
+        var result = await _cache.GetOrCreateAsync<IEnumerable<BlogPost>>(_cacheKeyPosts, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
@@ -124,13 +124,14 @@ public class BlogService : IBlogService
             // Sort by publication date descending
             posts.Sort((a, b) => b.PublishedAt.CompareTo(a.PublishedAt));
 
-            return posts;
+            return posts.ToList()!;
         });
+        return result!;
     }
 
     public async Task<IEnumerable<string>> GetCategoriesAsync()
     {
-        return await _cache.GetOrCreateAsync(_cacheKeyCategories, async entry =>
+        var result = await _cache.GetOrCreateAsync<IEnumerable<string>>(_cacheKeyCategories, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
             var posts = await GetAllPostsAsync();
@@ -139,22 +140,24 @@ public class BlogService : IBlogService
                 .Select(p => p.Category!)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(c => c, StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                .ToList()!;
         });
+        return result!;
     }
 
     public async Task<IEnumerable<string>> GetTagsAsync()
     {
-        return await _cache.GetOrCreateAsync(_cacheKeyTags, async entry =>
+        var result = await _cache.GetOrCreateAsync<IEnumerable<string>>(_cacheKeyTags, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
             var posts = await GetAllPostsAsync();
             return posts
-                .SelectMany(p => p.Tags)
+                .SelectMany(p => p.Tags ?? [])
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(t => t, StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                .ToList()!;
         });
+        return result!;
     }
 
     private async Task<BlogPost?> ParsePostFileAsync(string filePath)

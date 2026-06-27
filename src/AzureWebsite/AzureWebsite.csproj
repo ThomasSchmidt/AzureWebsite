@@ -5,6 +5,7 @@
     <UserSecretsId>4566d2c7-a9c4-41f1-9a12-9b5115abc777</UserSecretsId>
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <CompressionEnabled>false</CompressionEnabled>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   
   <ItemGroup>

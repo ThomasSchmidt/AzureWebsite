@@ -8,7 +8,7 @@ namespace AzureWebsite.Pages;
 public class ErrorPageModel : PageModel
 {
     [BindProperty(SupportsGet = true)]
-    public ErrorViewModel ErrorInfo { get; set; }
+    public ErrorViewModel? ErrorInfo { get; set; }
 
     public void OnGet()
     {
