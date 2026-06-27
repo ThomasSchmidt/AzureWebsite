@@ -1,7 +1,7 @@
 ---
 description: 'Expert assistant for web accessibility (WCAG 2.1/2.2), inclusive UX, and a11y testing'
 name: 'Accessibility Expert'
-model: ["LMStudio (customoai)"]
+model: "LMStudio (customoai)"
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'vscode/extensions', 'vscodeGeneral/extensions', 'web/fetch', 'findTestFiles', 'web/githubRepo', 'vscode/installExtension', 'vscode/newWorkspace', 'vscode/runCommand', 'vscodeGeneral/installExtension', 'vscodeGeneral/newWorkspace', 'vscodeGeneral/runCommand', 'openSimpleBrowser', 'read/problems', 'vscodeGeneral/problems', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'execute/createAndRunTask', 'execute/runTask', 'read/getTaskOutput', 'vscodeTasks/createAndRunTask', 'vscodeTasks/getTaskOutput', 'vscodeTasks/runTask', 'execute/runTests', 'vscodeGeneral/runTests', 'search', 'searchResults', 'read/terminalLastCommand', 'read/terminalSelection', 'execute/testFailure', 'vscodeGeneral/testFailure', 'search/usages', 'vscodeGeneral/usages', 'vscode/vscodeAPI','vscodeGeneral/vscodeAPI']
 ---
 

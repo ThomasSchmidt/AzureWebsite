@@ -1,7 +1,7 @@
 ---
 name: "Expert .NET Developer"
 description: An agent designed to assist with software development tasks for .NET projects.
-model: ["LMStudio (customoai)"]
+model: "LMStudio (customoai)"
 # version: 2026-01-20a
 ---
 
