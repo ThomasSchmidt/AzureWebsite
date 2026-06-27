@@ -666,4 +666,108 @@ public class BlogServiceTests : IDisposable
     }
 
     #endregion
+
+    #region HTML Sanitization (XSS Protection)
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithOnerrorAttribute_RemovesEventHandler()
+    {
+        var postContent = "title: XSS Test\ndate: 2026-06-13\n---\n\n<img src=x onerror=alert('XSS')>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-onerror.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("onerror", posts.First().ContentHtml);
+        Assert.DoesNotContain("alert", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithOnclickAttribute_RemovesEventHandler()
+    {
+        var postContent = "title: Click XSS Test\ndate: 2026-06-13\n---\n\n<button onclick=alert('clicked')>Click me</button>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-onclick.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("onclick", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithJavascriptProtocol_RemovesJavascriptLink()
+    {
+        var postContent = "title: JS Protocol Test\ndate: 2026-06-13\n---\n\n<a href=\"javascript:alert('XSS')\">Click</a>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-javascript.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("javascript:", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithOnloadAttribute_RemovesEventHandler()
+    {
+        var postContent = "title: Load XSS Test\ndate: 2026-06-13\n---\n\n<body onload=alert('XSS')>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-onload.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("onload", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithMultipleEventHandlers_RemovesAll()
+    {
+        var postContent = "title: Multiple XSS Test\ndate: 2026-06-13\n---\n\n<div onmouseover=alert(1) onmouseout=alert(2) onclick=alert(3)>Content</div>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-multiple.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("onmouseover", posts.First().ContentHtml);
+        Assert.DoesNotContain("onmouseout", posts.First().ContentHtml);
+        Assert.DoesNotContain("onclick", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithSafeHtml_PreservesLegitimateContent()
+    {
+        var postContent = "title: Safe HTML Test\ndate: 2026-06-13\n---\n\n<p>This is <strong>safe</strong> HTML with a <a href=\"https://example.com\">link</a>.</p>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-safe-html.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.Contains("<p>", posts.First().ContentHtml);
+        Assert.Contains("<strong>", posts.First().ContentHtml);
+        Assert.Contains("href=\"https://example.com\"", posts.First().ContentHtml);
+    }
+
+    [Fact]
+    public async Task GetAllPostsAsync_GivenPostWithOnfocusAttribute_RemovesEventHandler()
+    {
+        var postContent = @"title: Focus XSS Test
+date: 2026-06-13
+---
+
+<a href=""https://example.com"" onfocus=alert('XSS')>Link</a>";
+        await File.WriteAllTextAsync(Path.Combine(_testDirectory, "2026-06-13-xss-onfocus.md"), "---\n" + postContent);
+
+        var service = CreateService();
+        var posts = await service.GetAllPostsAsync();
+
+        Assert.Single(posts);
+        Assert.DoesNotContain("onfocus", posts.First().ContentHtml);
+    }
+
+    #endregion
 }
