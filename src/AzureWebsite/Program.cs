@@ -15,12 +15,16 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add OpenTelemetry with Azure Monitor exporter (MUST be FIRST service)
-        builder.Services.AddOpenTelemetry()
-            .UseAzureMonitor(options =>
-            {
-                // connection string will be read from envionment variable in Production, but can be overridden here for local development
-                options.ConnectionString = builder.Configuration["ConnectionStrings:ApplicationInsights"];
-            });
+        // Only configure if connection string is available (production env var or local override)
+        var appInsightsConnectionString = builder.Configuration["ConnectionStrings:ApplicationInsights"];
+        if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+        {
+            builder.Services.AddOpenTelemetry()
+                .UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = appInsightsConnectionString;
+                });
+        }
 
         builder.Services.AddRazorPages();
 
