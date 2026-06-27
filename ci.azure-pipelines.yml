@@ -83,30 +83,9 @@ stages:
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-        testResultsFiles: '**/*.trx' 
+        testResultsFiles: '$(Pipeline.Workspace)/TestResults/unittest/**/*.trx' 
         searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
         mergeTestResults: true # Optional
-
-    - task: PublishPipelineArtifact@1
-      name: 'publish_unittest_artifacts'
-      displayName: 'Publish unit test coverage artifact'
-      inputs:
-        artifact: 'unittest_coverage_artifact'
-        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
-
-- stage: 'stage_publish_codecoverage'
-  displayName: 'publish codecoverage reports'
-  jobs:
-  - job: 'publish'
-    steps:
-    
-    - task: DownloadPipelineArtifact@2
-      name: 'download_unittest_coverage_artifact'
-      displayName: 'download unittest coverage'
-      inputs:
-        buildType: 'current'
-        artifactName: 'unittest_coverage_artifact'
-        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
 
     - task: PublishCodeCoverageResults@2
       name: 'publish_code_coverage_report'
