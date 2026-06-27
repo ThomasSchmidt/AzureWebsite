@@ -18,6 +18,7 @@ public class Program
         builder.Services.AddOpenTelemetry()
             .UseAzureMonitor(options =>
             {
+                // connection string will be read from envionment variable in Production, but can be overridden here for local development
                 options.ConnectionString = builder.Configuration["ConnectionStrings:ApplicationInsights"];
             });
 
@@ -25,9 +26,6 @@ public class Program
 
         // Blog support
         builder.Services.AddMemoryCache();
-        builder.Services.Configure<BlogSettings>(builder.Configuration.GetSection("Blog"));
-        builder.Services.AddSingleton<IBlogService, BlogService>();
-
         builder.Services.Configure<BlogSettings>(builder.Configuration.GetSection("Blog"));
         builder.Services.AddSingleton<IBlogService, BlogService>();
 
@@ -53,18 +51,17 @@ public class Program
             app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
-            // app.UseHttpsRedirection();
         }
 
         app.UseStaticFiles();
 
         app.UseRouting();
 
-        app.UseOutputCache();
-
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        app.UseOutputCache();
 
         app.MapHealthChecks("/healthcheck");
 
