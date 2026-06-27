@@ -8,15 +8,11 @@
 				"--yes",
 				"--source",
 				"https://api.nuget.org/v3/index.json"
-			],
-			"gallery": "https://api.mcp.github.com",
-			"version": "1.3.6"
+			]
 		},
 		"microsoftdocs/mcp": {
 			"type": "http",
-			"url": "https://learn.microsoft.com/api/mcp",
-			"gallery": "https://api.mcp.github.com",
-			"version": "1.0.0"
+			"url": "https://learn.microsoft.com/api/mcp"
 		},
 		"context7": {
 			"url": "https://mcp.context7.com/mcp",
