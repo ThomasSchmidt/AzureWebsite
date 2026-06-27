@@ -103,7 +103,7 @@ public class BlogService : IBlogService
                 return posts;
             }
 
-            var files = Directory.GetFiles(directory, "*.md", SearchOption.TopDirectoryOnly);
+            var files = Directory.EnumerateFiles(directory, "*.md", SearchOption.TopDirectoryOnly).ToList();
 
             foreach (var file in files)
             {
