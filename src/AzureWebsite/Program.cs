@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using AzureWebsite.Services;
 
@@ -13,6 +14,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Logging
+            .ClearProviders()
+            .AddConsole();
 
         // Add OpenTelemetry with Azure Monitor exporter (MUST be FIRST service)
         // Only configure if connection string is available (production env var or local override)
@@ -46,6 +51,8 @@ public class Program
 
         var app = builder.Build();
 
+        app.Logger.LogInformation("Configuring for environment: {EnvironmentName}", app.Environment.EnvironmentName );
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -66,6 +73,8 @@ public class Program
         app.MapHealthChecks("/healthcheck");
 
         app.MapRazorPages();
+
+        app.Logger.LogInformation("Starting application on {Url}", app.Urls);
 
         app.Run();
     }
