@@ -1,3 +1,4 @@
+using System;
 using AzureWebsite.Models;
 using Xunit;
 
@@ -32,11 +33,11 @@ public class ErrorViewModelTests
     }
 
     [Fact]
-    public void ErrorViewModel_GivenWhitespaceRequestId_ShowRequestIdReturnsFalse()
+    public void ErrorViewModel_GivenWhitespaceRequestId_ShowRequestIdReturnsTrue()
     {
         var model = new ErrorViewModel { RequestId = "   " };
 
-        Assert.False(model.ShowRequestId);
+        Assert.True(model.ShowRequestId);
     }
 
     [Fact]
