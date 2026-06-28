@@ -46,7 +46,10 @@ public class BlogModel : PageModel
     [OutputCache(Duration = 3600)] // Cache for 1 hour
     public async Task<IActionResult> OnGetAsync(string slug)
     {
-        Post = await _blogService.GetPostBySlugAsync(slug);
+        // Fetch all posts once to avoid duplicate calls
+        var allPosts = await _blogService.GetAllPostsAsync();
+        var postsList = allPosts.ToList();
+        Post = postsList.FirstOrDefault(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
 
         if (Post == null)
         {
@@ -54,9 +57,7 @@ public class BlogModel : PageModel
         }
 
         // Find adjacent posts for navigation
-        var allPosts = await _blogService.GetAllPostsAsync();
-        var postsList = allPosts.ToList();
-        var currentIndex = postsList.FindIndex(p => p.Slug == slug);
+        var currentIndex = postsList.FindIndex(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
 
         if (currentIndex > 0)
         {

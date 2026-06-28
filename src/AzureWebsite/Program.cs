@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using AzureWebsite.Services;
 
@@ -14,13 +15,21 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Logging
+            .ClearProviders()
+            .AddConsole();
+
         // Add OpenTelemetry with Azure Monitor exporter (MUST be FIRST service)
-        builder.Services.AddOpenTelemetry()
-            .UseAzureMonitor(options =>
-            {
-                // connection string will be read from envionment variable in Production, but can be overridden here for local development
-                options.ConnectionString = builder.Configuration["ConnectionStrings:ApplicationInsights"];
-            });
+        // Only configure if connection string is available (production env var or local override)
+        var appInsightsConnectionString = builder.Configuration["ConnectionStrings:ApplicationInsights"];
+        if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+        {
+            builder.Services.AddOpenTelemetry()
+                .UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = appInsightsConnectionString;
+                });
+        }
 
         builder.Services.AddRazorPages();
 
@@ -42,14 +51,16 @@ public class Program
 
         var app = builder.Build();
 
+        app.Logger.LogInformation("Configuring for environment: {EnvironmentName}", app.Environment.EnvironmentName );
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
         else
         {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseExceptionHandler("/Error", createScopeForErrors: true);
+            app.UseHttpsRedirection();
             app.UseHsts();
         }
 
@@ -57,15 +68,13 @@ public class Program
 
         app.UseRouting();
 
-        app.UseAuthentication();
-
-        app.UseAuthorization();
-
         app.UseOutputCache();
 
         app.MapHealthChecks("/healthcheck");
 
         app.MapRazorPages();
+
+        app.Logger.LogInformation("Starting application on {Url}", app.Urls);
 
         app.Run();
     }

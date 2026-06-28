@@ -4,14 +4,13 @@ trigger:
 - feature/*
 
 pool:
-  vmImage: 'ubuntu-20.04'
-  # vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   solution: '**/*.slnx'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  webArtifactName: 'azure-website'
+  webArtifactName: 'website'
   # enables debug output
   # system.debug: true
 
@@ -42,8 +41,6 @@ stages:
         command: test
         arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
-        projects: '$(solution)'
-
 
     - task: PublishTestResults@2
       displayName: 'publish unittest results'
@@ -76,73 +73,23 @@ stages:
         includePreviewVersions: true
 
     - task: DotNetCoreCLI@2
-      displayName: 'run integration tests'
+      displayName: 'run unit tests'
       name: 'run_tests'
       inputs:
         command: test
-        arguments: '-c $(buildConfiguration) --logger trx --filter Category=integrationtest --results-directory $(Pipeline.Workspace)/TestResults/integrationtest/ --collect:"XPlat Code Coverage"'
+        arguments: '-c $(buildConfiguration) --logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
         publishTestResults: false
-        projects: '$(solution)'
 
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'VSTest' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-        testResultsFiles: '**/*.trx' 
-        searchFolder: '$(Pipeline.Workspace)/TestResults/integrationtest/' # Optional
+        testResultsFiles: '$(Pipeline.Workspace)/TestResults/unittest/**/*.trx' 
+        searchFolder: '$(Pipeline.Workspace)/TestResults/unittest/' # Optional
         mergeTestResults: true # Optional
 
-    - task: PublishPipelineArtifact@1
-      name: 'publish_integrationtest_artifacts'
-      displayName: 'Publish unit test coverage artifact'
-      inputs:
-        artifact: 'integrationtest_coverage_artifact'
-        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
-
-- stage: 'stage_publish_codecoverage'
-  displayName: 'publish codecoverage reports'
-  jobs:
-  - job: 'publish'
-    steps:
-    
-    - task: DownloadPipelineArtifact@2
-      name: 'download_unittest_coverage_artifact'
-      displayName: 'download unittest coverage'
-      inputs:
-        buildType: 'current'
-        artifactName: 'unittest_coverage_artifact'
-        targetPath: '$(Pipeline.Workspace)/TestResults/unittest/'
-
-    - task: DownloadPipelineArtifact@2
-      name: 'download_integrationtest_coverage_artifact'
-      displayName: 'download integrationtest coverage'
-      inputs:
-        buildType: 'current'
-        artifactName: 'integrationtest_coverage_artifact'
-        targetPath: '$(Pipeline.Workspace)/TestResults/integrationtest/'
-
-    #Merging code coverage reports into a full Cobertura report
-    - task: reportgenerator@4
-      name: "generate_report"
-      displayName: "generate code coverage report"
-      inputs:
-        reports: '$(Pipeline.Workspace)/TestResults/unittest/*/*.cobertura.xml;$(Pipeline.Workspace)/TestResults/integrationtest/*/*.cobertura.xml'
-        targetdir: '$(Pipeline.Workspace)/TestResults/coverage/'
-        reporttypes: "HtmlInline_AzurePipelines;Cobertura"
-
-    - task: PowerShell@2
-      displayName: 'list workspace'
-      name: 'list_workspace_coverage'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your PowerShell commands here.
-          Get-ChildItem $(Pipeline.Workspace)/TestResults/coverage/ -File -Recurse
-
-    - task: PublishCodeCoverageResults@1
-      name: 'publish_coverage_report'
-      displayName: 'publish coverage report'
+    - task: PublishCodeCoverageResults@2
+      name: 'publish_code_coverage_report'
+      displayName: 'publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
-        #summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/coverage/*.xml'
-        #reportDirectory: '$(Pipeline.Workspace)/TestResults/coverage/'
+        summaryFileLocation: '$(Pipeline.Workspace)/TestResults/unittest/**/*.cobertura.xml'

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AzureWebsite.Models;
 using Markdig;
@@ -103,7 +104,7 @@ public class BlogService : IBlogService
                 return posts;
             }
 
-            var files = Directory.GetFiles(directory, "*.md", SearchOption.TopDirectoryOnly);
+            var files = Directory.EnumerateFiles(directory, "*.md", SearchOption.TopDirectoryOnly).ToList();
 
             foreach (var file in files)
             {
@@ -172,8 +173,9 @@ public class BlogService : IBlogService
             return null;
         }
 
-        // Convert markdown to HTML
-        var html = Markdown.ToHtml(frontmatter.MarkdownBody, _pipeline);
+        // Convert markdown to HTML and sanitize to prevent XSS
+        var rawHtml = Markdown.ToHtml(frontmatter.MarkdownBody, _pipeline);
+        var html = SanitizeHtml(rawHtml);
 
         var slug = fileName; // Filename serves as the slug
 
@@ -281,5 +283,24 @@ public class BlogService : IBlogService
         }
 
         return frontmatter;
+    }
+
+    /// <summary>
+    /// Sanitizes HTML content to remove potentially dangerous attributes like onclick, onerror, etc.
+    /// This provides basic XSS protection without requiring additional dependencies.
+    /// </summary>
+    private static string SanitizeHtml(string html)
+    {
+        if (string.IsNullOrEmpty(html))
+            return html;
+
+        // Remove all event handler attributes (onclick, onerror, onload, onmouseover, etc.)
+        var sanitized = Regex.Replace(html, @"\s*on\w+\s*=\s*[""'][^""']*[""']", "", RegexOptions.IgnoreCase);
+        sanitized = Regex.Replace(sanitized, @"\s*on\w+\s*=\s*[^\s>]*", "", RegexOptions.IgnoreCase);
+
+        // Remove javascript: protocol links
+        sanitized = Regex.Replace(sanitized, @"href\s*=\s*[""']javascript:[^""']*[""']", "href=\"#\"", RegexOptions.IgnoreCase);
+
+        return sanitized;
     }
 }

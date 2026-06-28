@@ -11,7 +11,7 @@ public class IndexModel : PageModel
     {
     }
 
-    [OutputCache(Duration = 6000)]
+    [OutputCache(Duration = 300)]
     public void OnGet()
     {
     }

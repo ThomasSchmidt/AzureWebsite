@@ -1,16 +1,8 @@
 name: 'CD'
 
-# this is being defined in app-ci pipeline
-resources:
-  pipelines:
-  - pipeline: CI
-    source: CI
-    trigger: 
-      branches:
-        include: 
-        - master
-        exclude:
-        - feature/*
+trigger:
+- master
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -80,7 +72,7 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
-            arguments: '-c $(buildConfiguration) --logger trx --filter Category=unittest --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+            arguments: '-c $(buildConfiguration) --logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
             publishTestResults: false
 
         - task: PublishTestResults@2
