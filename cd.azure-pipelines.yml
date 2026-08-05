@@ -72,7 +72,7 @@ stages:
           displayName: 'run tests'
           inputs:
             command: 'test'
-            arguments: '-c $(buildConfiguration) --logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage"'
+            arguments: '-c $(buildConfiguration) --logger trx --results-directory $(Pipeline.Workspace)/TestResults/unittest/ --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute="GeneratedCodeAttribute"'
             publishTestResults: false
 
         - task: PublishTestResults@2
