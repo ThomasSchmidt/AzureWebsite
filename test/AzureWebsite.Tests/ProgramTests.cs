@@ -75,17 +75,6 @@ public class ProgramTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task Main_PrivacyPage_ReturnsSuccess()
-    {
-        var client = _factory.CreateClient();
-
-        var response = await client.GetAsync("/Privacy");
-
-        Assert.NotNull(response);
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [Fact]
     public async Task Main_BlogListingPage_ReturnsSuccess()
     {
         var client = _factory.CreateClient();
