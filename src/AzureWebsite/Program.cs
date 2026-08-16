@@ -17,7 +17,8 @@ public class Program
 
         builder.Logging
             .ClearProviders()
-            .AddConsole();
+            .AddConsole()
+            .AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 
         // Add OpenTelemetry with Azure Monitor exporter (MUST be FIRST service)
         // Only configure if connection string is available (production env var or local override)
