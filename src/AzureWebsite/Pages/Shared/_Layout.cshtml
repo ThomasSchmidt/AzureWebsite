@@ -12,16 +12,19 @@
         <nav aria-label="Main navigation">
             <ul>
                 <li>
-                    <a href="/" class="text-light Swimming-Back-1-hex">Home</a>
+                    <a href="/" class="brand">Schmidt Journal</a>
                 </li>
                 <li>
-                    <a asp-page="/Blog/Index" class="text-light">Blog</a>
+                    <a asp-page="/">Home</a>
+                </li>
+                <li>
+                    <a asp-page="/Blog/Index">Blog</a>
                 </li>
             </ul>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="text-dark">
+        <main id="main-content" role="main">
             @RenderBody()
         </main>
     </div>

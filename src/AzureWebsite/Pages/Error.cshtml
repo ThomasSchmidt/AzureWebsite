@@ -5,9 +5,9 @@
     ViewData["Title"] = "Error";
 }
 
-<section>
-    <h1 class="text-danger">Error.</h1>
-    <h2 class="text-danger">An error occurred while processing your request.</h2>
+<section class="section-card" aria-labelledby="error-title">
+    <h1 id="error-title">Something went wrong</h1>
+    <h2>We could not complete this request.</h2>
 
     @if (Model.ErrorInfo?.ShowRequestId == true)
     {
@@ -16,11 +16,12 @@
         </p>
     }
 
-    <h3>Development Mode</h3>
+    <h3>Development mode</h3>
     <p>
-        Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+        Running in <strong>Development</strong> shows more detailed exception information.
     </p>
     <p>
-        <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
+        <strong>Do not enable development mode in production</strong>. It can expose sensitive exception details.
+        For local debugging, set <strong>ASPNETCORE_ENVIRONMENT</strong> to <strong>Development</strong> and restart the app.
     </p>
 </section>

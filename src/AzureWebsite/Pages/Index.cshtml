@@ -4,8 +4,34 @@
     ViewData["Title"] = "Home";
 }
 
-<main id="main-content">
-    <section>
-        <h1>Welcome to the modified site</h1>
-    </section>
-</main>
+<section class="hero" aria-labelledby="home-title">
+    <span class="hero-kicker">Ramblings & Experiments</span>
+    <h1 id="home-title">Experiments in Software Engineering</h1>
+    <p>
+        This site is not a serious site, it is used only for testing and experimenting with various new technologies and frameworks. 
+        The content is not intended to be taken seriously, and may contain errors or inaccuracies. Site is built with local LLMs to se what
+        is possible with todays models running on slightly above consumer grade hardware.
+    </p>
+    <div class="hero-actions">
+        <a asp-page="/Blog/Index" class="button primary">Read the ramblings</a>
+        <a asp-page="/Blog/Index" class="button">Browse recent posts</a>
+    </div>
+</section>
+
+<section class="section-card" aria-labelledby="focus-title">
+    <h2 id="focus-title" class="section-title">What you will find here</h2>
+    <div class="feature-grid">
+        <article>
+            <h3>Notes from my experiments</h3>
+            <p>Results from experiments on various technologies.</p>
+        </article>
+        <article>
+            <h3>Thoughts about agentic engineering</h3>
+            <p>How can we use AI to produce quality code in a world filled with AI generated slop</p>
+        </article>
+        <article>
+            <h3>Working examples</h3>
+            <p>Code and screenshots that map directly to my experiments.</p>
+        </article>
+    </div>
+</section>
