@@ -1,15 +1,17 @@
-/* Blog refinements that complement the global site design system. */
 .blog-tags,
 .post-tags {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.35rem;
-	margin: 0.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin: .5rem 0;
 }
 
 .no-posts {
-	border-left: 4px solid var(--clay);
-	padding: 0.9rem 1rem;
-	background: color-mix(in srgb, var(--linen) 70%, white 30%);
-	border-radius: 0.35rem;
+    padding: 1.65rem 0;
+    border-bottom: 1px solid var(--rule);
+    font: 400 .93rem/1.55 system-ui, sans-serif;
+    color: var(--muted);
+    background: none;
+    border-radius: 0;
+    border-left: none;
 }
