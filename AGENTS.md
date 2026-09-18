@@ -47,6 +47,14 @@ This file tells AI coding agents how this repository is organized, how to build/
 - Preserve middleware ordering in `Program.cs` (StaticFiles → Routing → OutputCache → Authentication → Authorization → HealthChecks → RazorPages). Changes to ordering can change behavior.
 - Respect existing views under `src/AzureWebsite/Pages/Shared` for layout and partials.
 
+## Parallel implementation workflow
+
+- Do not perform concurrent implementation work in the same Git worktree.
+- Before starting an independently assigned implementation, create and use a dedicated Git worktree and branch.
+- Limit each implementation to its assigned files and documented interface contracts. Do not change shared files or contracts without first reporting the proposed change to the architect.
+- Commit completed work on the worktree's branch. Do not merge another agent's branch.
+- The architect or integration agent owns merge order, conflict resolution, and final build and test verification.
+
 ## Integration points / external dependencies
 
 - Health checks at `/healthcheck` — currently configured with no providers (`AddHealthChecks()` + `MapHealthChecks("/healthcheck")`). Keep this endpoint stable for monitoring; add diagnostics as needed.
