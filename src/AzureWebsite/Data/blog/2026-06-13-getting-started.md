@@ -8,8 +8,6 @@ tags: [getting-started, tutorial, setup]
 draft: false
 ---
 
-# Getting Started with AzureWebsite
-
 Welcome to the AzureWebsite blog! This post will walk you through the basics of the blog system.
 
 ## What is AzureWebsite?

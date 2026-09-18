@@ -2,6 +2,9 @@
 [Bb]in/
 [Oo]bj/
 
+# Temporary Playwright CLI browser artifacts
+/.playwright-cli/
+
 # mstest test results
 TestResults
 

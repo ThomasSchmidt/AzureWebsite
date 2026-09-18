@@ -446,7 +446,7 @@ main { display: grid; }
 }
 
 .blog-post h1 {
-    font: 900 clamp(2.8rem, 6vw, 5.5rem)/.9
+    font: 900 clamp(2.8rem, 5vw, 5rem)/.9
           system-ui, -apple-system, "Segoe UI", sans-serif;
     letter-spacing: -.06em;
     color: var(--ink);

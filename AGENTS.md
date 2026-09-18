@@ -41,6 +41,14 @@ This file tells AI coding agents how this repository is organized, how to build/
 - To test a specific C# file use `dotnet test --filter "FullyQualifiedName=<full-namespace-to-class>"` where <full-namespace-to-class> is the fully qualified name for the class to test
 - Note: VS Code tasks exist for build/publish/watch (check the workspace `Tasks` panel).
 
+### Local browser verification
+
+- Start the site with the Kestrel launch profile and keep the process attached: `dotnet run --project src/AzureWebsite/AzureWebsite.csproj --launch-profile Kestrel`. The expected local URL is `http://localhost:5001/`.
+- Do not wait passively for output from a long-running server process. After starting it, actively probe `http://localhost:5001/healthcheck` with a bounded retry of up to 30 seconds, then use Playwright to navigate to the requested page and inspect the rendered result.
+- For UI changes, verify the specific visual requirement with a Playwright snapshot and, when relevant, computed styles or element counts.
+- Stop only the server process started for verification. Never terminate an already-running, user-owned local server.
+- Do not use `--no-launch-profile` unless an explicit URL is supplied and the selected port is verified.
+
 ## When you modify code
 
 - Update both `src/AzureWebsite` and tests in `test/AzureWebsite.Tests` where appropriate. Run `dotnet test` after changing logic or configuration binding.
