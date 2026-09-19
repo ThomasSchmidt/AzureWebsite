@@ -91,23 +91,38 @@ public class GlossaryService : IGlossaryService
 
     private static (string Name, string Description) ExtractFrontmatter(string content, string fileName)
     {
-        if (content.StartsWith("---", StringComparison.Ordinal))
-        {
-            var closingIndex = content.IndexOf("---", 3, StringComparison.Ordinal);
-            if (closingIndex >= 0)
-            {
-                var yaml = content[3..closingIndex].Trim();
-                var body = content[(closingIndex + 3)..].Trim();
-                var name = ParseTermName(yaml) ?? fileName;
-                return (name, body);
-            }
+        // Normalize line endings and split into lines so the opening/closing "---"
+        // markers are only recognized when they appear alone on their own line —
+        // this avoids a "---" inside a quoted frontmatter value (or in the body)
+        // being mistaken for the closing delimiter.
+        var lines = content.Replace("\r\n", "\n").Split('\n');
 
-            // Opening "---" found but no closing marker — treat remainder as plain description.
+        if (lines[0].Trim() != "---")
+        {
+            // No frontmatter — treat entire content as the description.
             return (fileName, content.Trim());
         }
 
-        // No frontmatter — treat entire content as the description.
-        return (fileName, content.Trim());
+        var closingLineIndex = -1;
+        for (var i = 1; i < lines.Length; i++)
+        {
+            if (lines[i].Trim() == "---")
+            {
+                closingLineIndex = i;
+                break;
+            }
+        }
+
+        if (closingLineIndex == -1)
+        {
+            // Opening "---" found but no closing marker on its own line — treat remainder as plain description.
+            return (fileName, content.Trim());
+        }
+
+        var yaml = string.Join('\n', lines[1..closingLineIndex]).Trim();
+        var body = string.Join('\n', lines[(closingLineIndex + 1)..]).Trim();
+        var name = ParseTermName(yaml) ?? fileName;
+        return (name, body);
     }
 
     private static string? ParseTermName(string yaml)

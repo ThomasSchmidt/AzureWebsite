@@ -207,6 +207,21 @@ public class GlossaryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAllTermsAsync_GivenDashesInsideFrontmatterValue_DoesNotMistakeThemForClosingMarker()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "dashes-in-value.md"),
+            "---\nterm: \"A---B\"\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("A---B", term.Name);
+        Assert.Equal("Description body.", term.Description);
+    }
+
+    [Fact]
     public async Task GetAllTermsAsync_GivenQuotedTermValue_StripsSurroundingQuotes()
     {
         await File.WriteAllTextAsync(
