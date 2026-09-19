@@ -93,11 +93,11 @@ public class GlossaryService : IGlossaryService
     {
         if (content.StartsWith("---", StringComparison.Ordinal))
         {
-            var parts = content.Split(["---"], StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length >= 2)
+            var closingIndex = content.IndexOf("---", 3, StringComparison.Ordinal);
+            if (closingIndex >= 0)
             {
-                var yaml = parts[0].Trim();
-                var body = parts[1].Trim();
+                var yaml = content[3..closingIndex].Trim();
+                var body = content[(closingIndex + 3)..].Trim();
                 var name = ParseTermName(yaml) ?? fileName;
                 return (name, body);
             }
@@ -125,6 +125,14 @@ public class GlossaryService : IGlossaryService
 
             var key = trimmed[..colonIndex].Trim().ToLowerInvariant();
             var value = trimmed[(colonIndex + 1)..].Trim();
+
+            // Remove surrounding quotes
+            if (value.Length >= 2 &&
+                ((value.StartsWith('"') && value.EndsWith('"')) ||
+                 (value.StartsWith('\'') && value.EndsWith('\''))))
+            {
+                value = value[1..^1];
+            }
 
             if (key == "term")
             {

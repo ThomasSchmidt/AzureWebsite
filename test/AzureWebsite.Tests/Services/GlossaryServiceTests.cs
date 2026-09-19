@@ -191,6 +191,92 @@ public class GlossaryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAllTermsAsync_GivenBodyContainingHorizontalRule_PreservesFullDescription()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "with-rule.md"),
+            "---\nterm: WithRule\n---\nFirst paragraph.\n\n---\n\nSecond paragraph.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("WithRule", term.Name);
+        Assert.Contains("First paragraph.", term.Description);
+        Assert.Contains("Second paragraph.", term.Description);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenQuotedTermValue_StripsSurroundingQuotes()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "quoted.md"),
+            "---\nterm: \"Agentic Engineering\"\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("Agentic Engineering", term.Name);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenSingleQuotedTermValue_StripsSurroundingQuotes()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "single-quoted.md"),
+            "---\nterm: 'Single Quoted'\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("Single Quoted", term.Name);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenSingleCharacterQuoteValue_DoesNotThrow()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "single-char.md"),
+            "---\nterm: \"\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("\"", term.Name);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenMismatchedDoubleQuoteValue_KeepsValueUnchanged()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "mismatched-double.md"),
+            "---\nterm: \"Mismatched\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("\"Mismatched", term.Name);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenMismatchedSingleQuoteValue_KeepsValueUnchanged()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "mismatched-single.md"),
+            "---\nterm: 'Mismatched\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("'Mismatched", term.Name);
+    }
+
+    [Fact]
     public async Task GetAllTermsAsync_GivenCalledTwice_ReturnsCachedResultOnSecondCall()
     {
         await File.WriteAllTextAsync(
