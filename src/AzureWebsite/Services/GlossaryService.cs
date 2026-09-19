@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureWebsite.Models.Domain;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -31,48 +32,76 @@ public class GlossaryService : IGlossaryService
     private readonly IMemoryCache _cache;
     private readonly string _cacheKeyTerms = "glossary_all_terms";
 
-    public GlossaryService(IOptions<GlossarySettings> settings, ILogger<GlossaryService> logger, IMemoryCache cache)
+    public GlossaryService(
+        IOptions<GlossarySettings> settings,
+        ILogger<GlossaryService> logger,
+        IMemoryCache cache,
+        IHostEnvironment hostEnvironment)
     {
-        _termsDirectory = settings.Value.TermsDirectory;
+        _termsDirectory = Path.Combine(hostEnvironment.ContentRootPath, settings.Value.TermsDirectory);
         _logger = logger;
         _cache = cache;
     }
 
     public async Task<IEnumerable<GlossaryTerm>> GetAllTermsAsync()
     {
-        var result = await _cache.GetOrCreateAsync<IEnumerable<GlossaryTerm>>(_cacheKeyTerms, async entry =>
+        if (_cache.TryGetValue<IEnumerable<GlossaryTerm>>(_cacheKeyTerms, out var cached) && cached is not null)
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+            return cached;
+        }
 
-            var terms = new List<GlossaryTerm>();
-            var directory = _termsDirectory;
+        var terms = new List<GlossaryTerm>();
+        var directory = _termsDirectory;
 
-            if (!Directory.Exists(directory))
-            {
-                _logger.LogWarning("Glossary terms directory not found: {Directory}", directory);
-                return terms;
-            }
-
-            var files = Directory.EnumerateFiles(directory, "*.md", SearchOption.TopDirectoryOnly).ToList();
-
-            foreach (var file in files)
-            {
-                try
-                {
-                    var term = await ParseTermFileAsync(file);
-                    terms.Add(term);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to parse glossary term: {File}", file);
-                }
-            }
-
-            terms.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
-
+        if (!Directory.Exists(directory))
+        {
+            _logger.LogWarning("Glossary terms directory not found: {Directory}", directory);
             return terms;
-        });
-        return result!;
+        }
+
+        List<string> files;
+        try
+        {
+            files = EnumerateTermFiles(directory);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Do not cache this result: the failure may be transient (e.g. a momentary
+            // permission or TOCTOU issue), so the next request should retry rather than
+            // serve a stale empty glossary for the full cache duration.
+            _logger.LogWarning(ex, "Glossary terms directory could not be enumerated: {Directory}", directory);
+            return terms;
+        }
+
+        foreach (var file in files)
+        {
+            try
+            {
+                var term = await ParseTermFileAsync(file);
+                terms.Add(term);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to parse glossary term: {File}", file);
+            }
+        }
+
+        terms.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+
+        _cache.Set(_cacheKeyTerms, (IEnumerable<GlossaryTerm>)terms, TimeSpan.FromMinutes(5));
+
+        return terms;
+    }
+
+    /// <summary>
+    /// Enumerates markdown term files in the given directory. Extracted as a protected,
+    /// overridable seam so tests can simulate directory-enumeration failures (e.g.
+    /// <see cref="UnauthorizedAccessException"/> or <see cref="IOException"/>) that are
+    /// impractical to reproduce deterministically and cross-platform via real filesystem races.
+    /// </summary>
+    protected virtual List<string> EnumerateTermFiles(string directory)
+    {
+        return Directory.EnumerateFiles(directory, "*.md", SearchOption.TopDirectoryOnly).ToList();
     }
 
     private static async Task<GlossaryTerm> ParseTermFileAsync(string filePath)
@@ -121,13 +150,19 @@ public class GlossaryService : IGlossaryService
 
         var yaml = string.Join('\n', lines[1..closingLineIndex]).Trim();
         var body = string.Join('\n', lines[(closingLineIndex + 1)..]).Trim();
-        var name = ParseTermName(yaml);
+        var (name, description) = ParseFrontmatterValues(yaml);
         name = string.IsNullOrWhiteSpace(name) ? fileName : name;
-        return (name, body);
+        description ??= body;
+        return (name, description);
     }
 
-    private static string? ParseTermName(string yaml)
+    private static (string? Name, string? Description) ParseFrontmatterValues(string yaml)
     {
+        string? term = null;
+        string? title = null;
+        string? name = null;
+        string? description = null;
+
         foreach (var line in yaml.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
             var trimmed = line.Trim();
@@ -150,12 +185,23 @@ public class GlossaryService : IGlossaryService
                 value = value[1..^1];
             }
 
-            if (key == "term")
+            switch (key)
             {
-                return value;
+                case "term":
+                    if (!string.IsNullOrWhiteSpace(value)) term ??= value;
+                    break;
+                case "title":
+                    if (!string.IsNullOrWhiteSpace(value)) title ??= value;
+                    break;
+                case "name":
+                    if (!string.IsNullOrWhiteSpace(value)) name ??= value;
+                    break;
+                case "description":
+                    description ??= value;
+                    break;
             }
         }
 
-        return null;
+        return (term ?? title ?? name, description);
     }
 }
