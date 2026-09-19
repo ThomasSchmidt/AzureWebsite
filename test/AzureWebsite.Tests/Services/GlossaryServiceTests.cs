@@ -143,6 +143,36 @@ public class GlossaryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAllTermsAsync_GivenBlankTermValue_FallsBackToFileName()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "blank-term.md"),
+            "---\nterm:\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("blank-term", term.Name);
+        Assert.NotEqual(string.Empty, term.Name);
+    }
+
+    [Fact]
+    public async Task GetAllTermsAsync_GivenEmptyQuotedTermValue_FallsBackToFileName()
+    {
+        await File.WriteAllTextAsync(
+            Path.Combine(_testDirectory, "empty-quoted-term.md"),
+            "---\nterm: \"\"\n---\nDescription body.");
+
+        var service = CreateService(_testDirectory);
+        var terms = await service.GetAllTermsAsync();
+
+        var term = Assert.Single(terms);
+        Assert.Equal("empty-quoted-term", term.Name);
+        Assert.NotEqual(string.Empty, term.Name);
+    }
+
+    [Fact]
     public async Task GetAllTermsAsync_GivenFrontmatterWithoutTermKey_FallsBackToFileName()
     {
         await File.WriteAllTextAsync(

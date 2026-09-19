@@ -121,7 +121,8 @@ public class GlossaryService : IGlossaryService
 
         var yaml = string.Join('\n', lines[1..closingLineIndex]).Trim();
         var body = string.Join('\n', lines[(closingLineIndex + 1)..]).Trim();
-        var name = ParseTermName(yaml) ?? fileName;
+        var name = ParseTermName(yaml);
+        name = string.IsNullOrWhiteSpace(name) ? fileName : name;
         return (name, body);
     }
 
