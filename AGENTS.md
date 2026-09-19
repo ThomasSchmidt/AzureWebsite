@@ -48,6 +48,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 - For UI changes, verify the specific visual requirement with a Playwright snapshot and, when relevant, computed styles or element counts.
 - Stop only the server process started for verification. Never terminate an already-running, user-owned local server.
 - Do not use `--no-launch-profile` unless an explicit URL is supplied and the selected port is verified.
+- Leave Playwright CLI artifacts (screenshots, snapshots, `.playwright-cli/` output) in place after verification; they are already excluded via `.gitignore` and the user will clean them up manually.
 
 ## When you modify code
 
@@ -58,10 +59,12 @@ This file tells AI coding agents how this repository is organized, how to build/
 ## Parallel implementation workflow
 
 - Do not perform concurrent implementation work in the same Git worktree.
-- Before starting an independently assigned implementation, create and use a dedicated Git worktree and branch.
+- All feature deliverables must be produced on a separate feature branch named `feature/<short-description>`, where `<short-description>` is a concise kebab-case description. Do not deliver feature work from the base branch.
+- The architect must create and use a dedicated Git worktree for the final `feature/<short-description>` branch before beginning feature work.
+- Before starting an independently assigned implementation, create and use a dedicated Git worktree and branch. The architect must require this of every subagent, including sequential workers.
 - Limit each implementation to its assigned files and documented interface contracts. Do not change shared files or contracts without first reporting the proposed change to the architect.
 - Commit completed work on the worktree's branch. Do not merge another agent's branch.
-- The architect or integration agent owns merge order, conflict resolution, and final build and test verification.
+- The architect or integration agent owns merge order, conflict resolution, and final build and test verification on the final `feature/<short-description>` branch.
 
 ## Integration points / external dependencies
 
