@@ -39,6 +39,10 @@ public class Program
         builder.Services.Configure<BlogSettings>(builder.Configuration.GetSection("Blog"));
         builder.Services.AddSingleton<IBlogService, BlogService>();
 
+        // Glossary support
+        builder.Services.Configure<GlossarySettings>(builder.Configuration.GetSection("Glossary"));
+        builder.Services.AddSingleton<IGlossaryService, GlossaryService>();
+
         builder.Services.AddHealthChecks();
         
         builder.Services.AddOutputCache();

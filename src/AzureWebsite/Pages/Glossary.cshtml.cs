@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using AzureWebsite.Models.Domain;
+using AzureWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.OutputCaching;
@@ -9,23 +12,22 @@ namespace AzureWebsite.Pages;
 
 public class GlossaryModel : PageModel
 {
-    private static readonly GlossaryTerm[] AllTerms =
-    [
-        new GlossaryTerm(
-            "ADR",
-            "Short for Architectural Decision Record, which contains information about important architectural decisions."),
-        new GlossaryTerm(
-            "Agentic Engineering",
-            "How developers use agents to develop code with agent harnesses. Note that this is very much not the same as vibecoding, as agentic engineering always requires a human in the loop to review code and steer agents in the right direction."),
-    ];
+    private readonly IGlossaryService _glossaryService;
 
-    public IReadOnlyList<GlossaryTerm> Terms { get; } =
-        [.. AllTerms.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)];
+    public GlossaryModel(IGlossaryService glossaryService)
+    {
+        _glossaryService = glossaryService;
+    }
+
+    public IReadOnlyList<GlossaryTerm> Terms { get; private set; } = [];
 
     [OutputCache(Duration = 300)]
-    public void OnGet()
+    public async Task OnGet()
     {
+        var terms = await _glossaryService.GetAllTermsAsync();
+
+        // Defensive sort: the service already sorts alphabetically, but the page
+        // guarantees stable ordering regardless of the service implementation.
+        Terms = [.. terms.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase)];
     }
 }
-
-public record GlossaryTerm(string Name, string Description);
