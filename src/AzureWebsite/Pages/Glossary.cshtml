@@ -1,0 +1,29 @@
+@page "/glossary"
+@model GlossaryModel
+@{
+    ViewData["Title"] = "Glossary";
+}
+
+<div class="glossary-page">
+    <h1>@ViewData["Title"]</h1>
+    <p class="glossary-intro">Terms and concepts used throughout this site.</p>
+
+    <table class="glossary-table">
+        <caption class="visually-hidden">Glossary of terms</caption>
+        <thead>
+            <tr>
+                <th scope="col">Term</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var term in Model.Terms)
+            {
+                <tr>
+                    <th scope="row">@term.Name</th>
+                    <td>@term.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -48,6 +48,7 @@ This file tells AI coding agents how this repository is organized, how to build/
 - For UI changes, verify the specific visual requirement with a Playwright snapshot and, when relevant, computed styles or element counts.
 - Stop only the server process started for verification. Never terminate an already-running, user-owned local server.
 - Do not use `--no-launch-profile` unless an explicit URL is supplied and the selected port is verified.
+- Leave Playwright CLI artifacts (screenshots, snapshots, `.playwright-cli/` output) in place after verification; they are already excluded via `.gitignore` and the user will clean them up manually.
 
 ## When you modify code
 
